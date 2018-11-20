@@ -5,8 +5,8 @@ import (
 )
 
 // PackToJSON | Receives string key and interface value and returns json bytes.
-func PackToJSON(key string, value interface{}) []byte{
-	m := map[string]interface{}{key : value}
+func PackToJSON(key string, value string) []byte{
+	m := map[string]string{key : value}
 	b, err := json.MarshalIndent(m,""," ")
 	if err != nil{
 		panic(err)
@@ -15,7 +15,7 @@ func PackToJSON(key string, value interface{}) []byte{
 }
 
 // PackMapToJSON | Receives map and returns json bytes.
-func PackMapToJSON(m map[string]interface{}) []byte{
+func PackMapToJSON(m map[string]string) []byte{
 	b, err := json.MarshalIndent(m,""," ")
 	if err != nil{
 		panic(err)

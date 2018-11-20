@@ -5,10 +5,10 @@ import (
 )
 
 // Get | Receives and key and returns value according its key.
-func Get(key string) interface{}{
+func Get(key string) string {
 	s := inmemory.Storage
 	v := (*s)[key]
-	if v != nil{
+	if v != ""{
 		return v;
 	} else {
 		return "Value with this key not found"
@@ -16,17 +16,17 @@ func Get(key string) interface{}{
 }
 
 // Set | Set value according to key.
-func Set(key string, value interface{}) string{
+func Set(key string, value string) string{
 	s := inmemory.Storage
 	(*s)[key] = value
 	return "Value has changed"
 }
 
 // Del | Del value according to key.
-func Del(key string) interface{}{
+func Del(key string) string{
 	s := inmemory.Storage
 	v := (*s)[key]
-	if v != nil {
+	if v != "" {
 		delete(*s,key)
 		return v;
 	} else {

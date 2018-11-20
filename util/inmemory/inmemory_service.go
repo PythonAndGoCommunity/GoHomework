@@ -5,10 +5,10 @@ import (
 	"NonRelDB-server/util/file"
 )
 
-var Storage *map[string]interface{}
+var Storage *map[string]string
 
 func init(){
-	s := make(map[string]interface{})
+	s := make(map[string]string)
 	Storage = &s
 }
 
