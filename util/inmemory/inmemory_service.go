@@ -7,6 +7,11 @@ import (
 
 var Storage *map[string]interface{}
 
+func init(){
+	s := make(map[string]interface{})
+	Storage = &s
+}
+
 // InitDBFromStorage | Receives filename and load its content to inmemory storage.
 func InitDBFromStorage(filename string){
 	j := file.OpenAndReadString(filename)
