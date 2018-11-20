@@ -4,6 +4,7 @@ import (
 	"os"
 )
 
+// CreateAndWriteString | Creates file and writes string to it.
 func CreateAndWriteString(name string, value string){
 	f, err := os.Create(name)
 	if err != nil{
@@ -16,6 +17,7 @@ func CreateAndWriteString(name string, value string){
 	f.Close()
 }
 
+// CreateAndWrite | Creates file and writes byte array to it.
 func CreateAndWrite(name string, value []byte){
 	f, err := os.Create(name)
 	if err != nil{
