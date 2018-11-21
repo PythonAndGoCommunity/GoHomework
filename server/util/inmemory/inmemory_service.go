@@ -5,9 +5,11 @@ import (
 	"NonRelDB/server/util/file"
 )
 
+// Storage | Global variable for kv storage.
 var Storage *map[string]string
 
-func init(){
+// InitDBInMemory | Init kv db in memory.
+func InitDBInMemory(){
 	s := make(map[string]string)
 	Storage = &s
 }
