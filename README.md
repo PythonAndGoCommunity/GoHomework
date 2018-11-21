@@ -1,2 +1,2 @@
-# NonRelDB-server
-Server for redis like db on golang.
+# NonRelDB
+Redis like db on golang.

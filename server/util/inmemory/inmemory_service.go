@@ -1,8 +1,8 @@
 package inmemory
 
 import (
-	"NonRelDB-server/util/json"
-	"NonRelDB-server/util/file"
+	"NonRelDB/server/util/json"
+	"NonRelDB/server/util/file"
 )
 
 var Storage *map[string]string

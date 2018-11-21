@@ -1,7 +1,7 @@
 package query
 
 import (
-	"NonRelDB-server/util/inmemory"
+	"NonRelDB/server/util/inmemory"
 )
 
 // Get | Receives and key and returns value according its key.
