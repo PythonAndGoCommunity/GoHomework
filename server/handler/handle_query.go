@@ -12,6 +12,8 @@ func HandleQuery(q string) string {
 			return query.Get(p[1])
 		} else if strings.ToLower(p[0]) == "del" {
 			return query.Del(p[1])
+		} else if strings.ToLower(p[0]) == "keys" {
+			return query.Keys(p[1])
 		}
 	} else if len(p) == 3 {
 		if strings.ToLower(p[0]) == "set" {

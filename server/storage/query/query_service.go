@@ -1,7 +1,10 @@
 package query
 
 import (
+	"regexp"
+	"strings"
 	"NonRelDB/server/storage/inmemory"
+	"NonRelDB/server/log"
 )
 
 // Get | Receives and key and returns value according its key.
@@ -31,5 +34,26 @@ func Del(key string) string{
 		return v;
 	} else {
 		return "Value with this key not found"
+	}
+}
+
+func Keys(pattern string) string {
+	s := inmemory.Storage
+	var keys []string
+
+	for k, _ := range (*s) {
+		m, err := regexp.MatchString("\r" + pattern, k)
+		if err != nil {
+			log.Warning.Println(err.Error())
+		}
+		if m {
+			keys = append(keys, k)
+		}
+	}
+
+	if keys != nil {
+		return strings.Join(keys,",")
+	} else {
+		return "Keys with this pattern not found"
 	}
 }
