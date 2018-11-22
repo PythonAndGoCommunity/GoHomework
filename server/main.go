@@ -41,13 +41,14 @@ func cleanup() {
 	go func() {
 		<-sign
 		log.Info.Println("Ctrl+C pressed in Terminal")
-		inmemory.SaveDBToStorage(location)
+		if (mode == "disk"){
+			inmemory.SaveDBToStorage(location)
+		}
 		os.Exit(0)
 	}()
 }
 
 func main() {
-
 	storageInit()
 	cleanup()
 
