@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net"
+	"NonRelDB/server/log"
 )
 
 func HandleListener(l net.Listener){
@@ -9,11 +10,10 @@ func HandleListener(l net.Listener){
 	for {
 		c, err := l.Accept()
 		if err != nil {
-			// log.Print(err.Error())
-			// errorLogger.Println(err.Error())
+			log.Warning.Printf("Failed connection from %s",c.RemoteAddr().String())
 			c.Close()
 		}
-		// infoLogger.Println("Connection successfully accepted")
+		log.Info.Printf("%s was connected to server",c.RemoteAddr().String())
 		go HandleConnection(c)
 	}	
 }

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"NonRelDB/server/util/query"
+	"NonRelDB/server/storage/query"
 	"strings"
 )
 

@@ -2,9 +2,9 @@ package main
 
 import (
 	"NonRelDB/server/handler"
-	"NonRelDB/server/util/inmemory"
+	"NonRelDB/server/log"
+	"NonRelDB/server/storage/inmemory"
 	"flag"
-	"fmt"
 	"net"
 	"os"
 	"os/signal"
@@ -27,18 +27,7 @@ func init() {
 	flag.Parse()
 }
 
-func cleanup(){
-	sign := make(chan os.Signal, 2)
-    signal.Notify(sign, os.Interrupt, syscall.SIGTERM)
-    go func() {
-        <-sign
-        fmt.Println("\r- Ctrl+C pressed in Terminal")
-		inmemory.SaveDBToStorage(location)
-		os.Exit(0)
-    }()
-}
-
-func storageInit(){
+func storageInit() {
 	if mode == "memory" {
 		inmemory.InitDBInMemory()
 	} else if mode == "disk" {
@@ -46,15 +35,28 @@ func storageInit(){
 	}
 }
 
+func cleanup() {
+	sign := make(chan os.Signal, 2)
+	signal.Notify(sign, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-sign
+		log.Info.Println("Ctrl+C pressed in Terminal")
+		inmemory.SaveDBToStorage(location)
+		os.Exit(0)
+	}()
+}
 
+func main() {
 
-func main() {	
 	storageInit()
 	cleanup()
-	fmt.Printf("Server started listening on %s:%s",ip,port)
+
 	l, err := net.Listen("tcp", ip+":"+port)
+	
 	if err != nil {
-		panic(err)
+		log.Error.Panicln(err.Error())
 	}
+
+	log.Info.Printf("Server started listening on %s", l.Addr().String())
 	handler.HandleListener(l)
 }
