@@ -19,8 +19,7 @@ func InitDBInMemory(){
 
 // InitDBFromStorage | Receives filename and load its content to inmemory storage.
 func InitDBFromStorage(filename string){
-	log.Info.Println("[" + filename+"]")
-	log.Info.Println(len(filename))
+	defer log.Info.Printf("DB successfully initialized from %s", filename)
 
 	_, err := os.Stat(filename)
 
@@ -33,7 +32,6 @@ func InitDBFromStorage(filename string){
 		if err != nil {
 			log.Error.Panicln(err.Error())
 		}
-		log.Info.Printf("DB successfully initialized from %s", filename)
 		f.Close()
 	}
 
