@@ -15,9 +15,9 @@ func HandleQuery(q string) string {
 		} else if strings.ToLower(p[0]) == "keys" {
 			return query.Keys(p[1])
 		}
-	} else if len(p) == 3 {
+	} else if len(p) >= 3 {
 		if strings.ToLower(p[0]) == "set" {
-			return query.Set(p[1], p[2])
+			return query.Set(p[1], strings.Join(p[2:]," "))
 		}
 	}
 	return "Undefined query"
