@@ -45,6 +45,7 @@ func Keys(pattern string) string {
 
 	if err != nil {
 		log.Warning.Println(err.Error())
+		return "Pattern is incorrect"
 	}
 
 	for k := range (*s) {
