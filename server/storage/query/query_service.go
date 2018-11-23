@@ -41,12 +41,14 @@ func Keys(pattern string) string {
 	s := inmemory.Storage
 	var keys []string
 
-	for k, _ := range (*s) {
-		m, err := regexp.MatchString("\r" + pattern, k)
-		if err != nil {
-			log.Warning.Println(err.Error())
-		}
-		if m {
+	re, err := regexp.Compile(pattern)
+
+	if err != nil {
+		log.Warning.Println(err.Error())
+	}
+
+	for k := range (*s) {
+		if re.MatchString(k) {
 			keys = append(keys, k)
 		}
 	}
