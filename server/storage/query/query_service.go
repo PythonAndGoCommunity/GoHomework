@@ -9,7 +9,7 @@ import (
 
 // Get | Receives and key and returns value according its key.
 func Get(key string) string {
-	s := inmemory.Storage
+	s := inmemory.GetStorage()
 	v := (*s)[key]
 	if v != ""{
 		return v;
@@ -20,14 +20,14 @@ func Get(key string) string {
 
 // Set | Set value according to key.
 func Set(key string, value string) string{
-	s := inmemory.Storage
+	s := inmemory.GetStorage()
 	(*s)[key] = value
 	return "Value has changed"
 }
 
 // Del | Del value according to key.
 func Del(key string) string{
-	s := inmemory.Storage
+	s := inmemory.GetStorage()
 	v := (*s)[key]
 	if v != "" {
 		delete(*s,key)
@@ -37,8 +37,9 @@ func Del(key string) string{
 	}
 }
 
+// Keys | Returns keys which match to pattern.
 func Keys(pattern string) string {
-	s := inmemory.Storage
+	s := inmemory.GetStorage()
 	var keys []string
 
 	re, err := regexp.Compile(pattern)
