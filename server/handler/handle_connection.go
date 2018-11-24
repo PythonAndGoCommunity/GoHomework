@@ -2,7 +2,7 @@ package handler
 
 import (
 	"net"
-	"NonRelDB/server/log"
+	"NonRelDB/log"
 )
 
 func HandleConnection(c net.Conn){

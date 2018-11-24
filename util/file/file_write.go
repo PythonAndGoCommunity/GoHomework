@@ -2,7 +2,7 @@ package file
 
 import (
 	"os"
-	"NonRelDB/server/log"
+	"NonRelDB/log"
 )
 
 // CreateAndWriteString | Creates file and writes string to it.

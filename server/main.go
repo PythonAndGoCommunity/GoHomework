@@ -2,7 +2,7 @@ package main
 
 import (
 	"NonRelDB/server/handler"
-	"NonRelDB/server/log"
+	"NonRelDB/log"
 	"NonRelDB/server/storage/inmemory"
 	"flag"
 	"net"

@@ -2,7 +2,7 @@ package json
 
 import (
 	"encoding/json"
-	"NonRelDB/server/log"
+	"NonRelDB/log"
 )
 
 // UnpackFromJSON | Receives json bytes and returns map pointer.

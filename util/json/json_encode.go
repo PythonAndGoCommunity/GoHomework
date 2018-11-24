@@ -2,7 +2,7 @@ package json
 
 import (
 	"encoding/json"
-	"NonRelDB/server/log"
+	"NonRelDB/log"
 )
 
 // PackToJSON | Receives string key and interface value and returns json bytes.

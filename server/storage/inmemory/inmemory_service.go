@@ -2,9 +2,9 @@ package inmemory
 
 import (
 	"os"
-	"NonRelDB/server/util/json"
-	"NonRelDB/server/util/file"
-	"NonRelDB/server/log"
+	"NonRelDB/util/json"
+	"NonRelDB/util/file"
+	"NonRelDB/log"
 )
 
 // Storage | Global variable for kv storage.

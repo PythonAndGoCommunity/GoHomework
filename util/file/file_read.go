@@ -2,7 +2,7 @@ package file
 
 import (
 	"io/ioutil"
-	"NonRelDB/server/log"
+	"NonRelDB/log"
 )
 
 // OpenAndReadString | receives file name, reads this file and returns its string content.

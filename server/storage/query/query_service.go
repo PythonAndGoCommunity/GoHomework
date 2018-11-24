@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 	"NonRelDB/server/storage/inmemory"
-	"NonRelDB/server/log"
+	"NonRelDB/log"
 )
 
 // Get | Receives and key and returns value according its key.
