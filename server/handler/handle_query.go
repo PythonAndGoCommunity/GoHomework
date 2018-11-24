@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"NonRelDB/server/storage/query"
 	"strings"
+	"NonRelDB/server/storage/query"
 )
 
 func HandleQuery(q string) string {
