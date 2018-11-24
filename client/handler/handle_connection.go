@@ -24,6 +24,7 @@ func HandleConnection(c net.Conn){
 	
 		if command == "exit"{
 			fmt.Println("Good bye")
+			c.Write([]byte(command))
 			return
 		}
 

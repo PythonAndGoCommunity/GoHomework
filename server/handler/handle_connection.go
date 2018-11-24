@@ -17,6 +17,11 @@ func HandleConnection(c net.Conn){
 		}
 
 		query := string(req[:lenReq]) 
+
+		if query == "exit" {
+			log.Info.Printf("%s disconnected from server",c.RemoteAddr().String())
+			return
+		}
 		log.Info.Printf("Received request from %s -> %s", c.RemoteAddr().String(), query)
 
 		resp_str := HandleQuery(query)
