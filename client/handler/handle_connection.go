@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"strings"
 	"net"
 	"bufio"
 	"os"
@@ -9,14 +10,11 @@ import (
 )
 
 func HandleConnection(c net.Conn){
+	consoleReader := bufio.NewReader(os.Stdin)
+	netReader := bufio.NewReader(c)
 	for {
-		consoleReader := bufio.NewReader(os.Stdin)
-		// netReader := bufio.NewReader(c)
-		// netWriter := bufio.NewWriter(c)
-
-		fmt.Print("\nNonRelDB> ")
+		fmt.Print("NonRelDB> ")
 		command, err := consoleReader.ReadString('\n')
-		command = command[:len(command)-1]
 		
 		if err != nil {
 			log.Error.Panicln(err.Error())
@@ -24,22 +22,18 @@ func HandleConnection(c net.Conn){
 	
 		if command == "exit"{
 			fmt.Println("Good bye")
-			c.Write([]byte(command))
+			fmt.Print(c, command)
 			return
 		}
 
-		req := []byte(command)
-		c.Write(req)
+		fmt.Fprintf(c, strings.Trim(command," "))
 
-		resp := make([]byte, 1024)
-		lenResp, err := c.Read(resp)
+		resp, err := netReader.ReadString('\n')
 
 		if err != nil {
 			log.Error.Panicln(err.Error())
 		}
 
-		value := string(resp[:lenResp])
-
-		fmt.Println(value)
+		fmt.Println(resp)
 	}
 }
