@@ -1,4 +1,4 @@
-In order to launch the programm, it's ought to do the following steps:
+In order to launch the program, it's ought to do the following steps:
 
 1) Launch TinyRedisServer application from the folder of the same name. Options "-p" or "--port" for the choice of port and options "-m" or "--mode" for the choice of port can be used.
 
@@ -6,4 +6,4 @@ In order to launch the programm, it's ought to do the following steps:
 
 Optionally you can launch multiple clients at the same time, though you would do it at your own risk.
 
-Test data and adequate docker files unfortunatelly are not yet avaliable.
+Test data and adequate docker files unfortunately are not yet available.
