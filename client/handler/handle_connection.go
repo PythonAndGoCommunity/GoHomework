@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"strings"
 	"net"
 	"bufio"
 	"os"
@@ -20,13 +19,13 @@ func HandleConnection(c net.Conn){
 			log.Error.Panicln(err.Error())
 		}
 	
-		if command == "exit"{
+		if command == "exit\n"{
 			fmt.Println("Good bye")
-			fmt.Print(c, command)
+			fmt.Fprintf(c, command)
 			return
 		}
 
-		fmt.Fprintf(c, strings.Trim(command," "))
+		fmt.Fprintf(c, command)
 
 		resp, err := netReader.ReadString('\n')
 

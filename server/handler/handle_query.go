@@ -3,16 +3,10 @@ package handler
 import (
 	"strings"
 	"NonRelDB/server/storage/inmemory"
-	"NonRelDB/util/json"
 )
 
 func HandleQuery(q string) string {
 	p := strings.Split(q, " ")
-	if len(p) == 1 {
-		if strings.ToLower(p[0]) == "dump"{
-			return string(json.PackMapToJSON((*inmemory.GetStorage().GetMap())))
-		}
-	}
 	if len(p) == 2 {
 		if strings.ToLower(p[0]) == "get" {
 			return inmemory.GetStorage().Get(p[1])
