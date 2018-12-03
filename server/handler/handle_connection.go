@@ -8,6 +8,7 @@ import (
 	"NonRelDB/log"
 	"NonRelDB/util/json"
 	"NonRelDB/server/storage/inmemory"
+	"NonRelDB/server/topic"
 )
 
 func HandleConnection(c net.Conn){
@@ -19,8 +20,6 @@ func HandleConnection(c net.Conn){
 
 		query, err := netReader.ReadString('\n')
 		query = strings.TrimSuffix(query,"\n")
-
-		fmt.Println("[" + query + "]")
 
 		if err != nil {
 			log.Error.Println(err.Error())
@@ -35,6 +34,21 @@ func HandleConnection(c net.Conn){
 			dbDump := string(json.PackMapToJSON((*inmemory.GetStorage().GetMap())))
 			fmt.Fprintf(c, dbDump + "\n")
 			return 
+		} else if strings.Contains(query, "subscribe") || strings.Contains(query, "publish") {
+			qp := strings.Split(query, " ")
+			if len(qp) == 2 {
+				if strings.ToLower(qp[0]) == "subscribe" {
+					topic.Subscribe(qp[1], c)
+				} else if strings.ToLower(qp[0]) == "unsubscribe" {
+					topic.Unsubscribe(qp[1], c)
+					return
+				}
+			} else if len(qp) == 3 {
+				if strings.ToLower(qp[0]) == "publish" {
+					topic.Publish(qp[1],qp[2])
+				}
+			}
+			continue
 		}
 
 		log.Info.Printf("Received request from %s -> %s", c.RemoteAddr().String(), query)

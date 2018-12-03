@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"strings"
 	"net"
 	"bufio"
 	"os"
@@ -23,8 +24,14 @@ func HandleConnection(c net.Conn){
 			fmt.Println("Good bye")
 			fmt.Fprintf(c, command)
 			return
+		} else if strings.Contains(command, "subscribe"){
+			fmt.Fprintf(c, command)
+			HandleTopic(c, *netReader, strings.Split(command, " ")[1])
+		} else if strings.Contains(command, "publish"){
+			fmt.Fprintf(c, command)
+			continue
 		}
-
+		
 		fmt.Fprintf(c, command)
 
 		resp, err := netReader.ReadString('\n')
