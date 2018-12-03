@@ -33,8 +33,6 @@ func init(){
 }
 
 func HandleQuery(q string) string {
-	fmt.Println("[" + q + "]")
-
 	if getReg.MatchString(q) {
 		key := strings.Trim(keyGetDelReg.FindString(q), " ")
 		fmt.Println("[" + key + "]")
