@@ -15,9 +15,26 @@ func PackToJSON(key string, value string) []byte{
 	return b
 }
 
+func PackToJSONIndent(key string, value string) []byte{
+	m := map[string]string{key : value}
+	b, err := json.MarshalIndent(m,"", " ")
+	if err != nil{
+		log.Error.Println(err.Error())
+	}
+	return b
+}
+
 // PackMapToJSON | Receives map and returns json bytes.
 func PackMapToJSON(m map[string]string) []byte{
 	b, err := json.Marshal(m)
+	if err != nil{
+		log.Error.Println(err.Error())
+	}
+	return b
+}
+
+func PackMapToJSONIndent(m map[string]string) []byte{
+	b, err := json.MarshalIndent(m, "", " ")
 	if err != nil{
 		log.Error.Println(err.Error())
 	}
