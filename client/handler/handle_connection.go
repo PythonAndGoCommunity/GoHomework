@@ -7,39 +7,51 @@ import (
 	"os"
 	"fmt"
 	"NonRelDB/log"
+	"NonRelDB/util/regex"
 )
+
+func SentRequest(req string, c net.Conn){
+	fmt.Fprintf(c, req)
+}
 
 func HandleConnection(c net.Conn){
 	consoleReader := bufio.NewReader(os.Stdin)
 	netReader := bufio.NewReader(c)
 	for {
 		fmt.Print("NonRelDB> ")
-		command, err := consoleReader.ReadString('\n')
+		req, err := consoleReader.ReadString('\n')
 		
 		if err != nil {
 			log.Error.Panicln(err.Error())
 		}
-	
-		if command == "exit\n"{
+
+		if regex.QueryReg.MatchString(req){
+			SentRequest(req, c)
+			resp, err := netReader.ReadString('\n')
+
+			if err != nil {
+				log.Error.Panicln(err.Error())
+			}
+
+			fmt.Println(resp)
+
+		} else if regex.ExitReg.MatchString(req){
 			fmt.Println("Good bye")
-			fmt.Fprintf(c, command)
+			SentRequest(req, c)
 			return
-		} else if strings.Contains(command, "subscribe"){
-			fmt.Fprintf(c, command)
-			HandleTopic(c, *netReader, strings.Split(command, " ")[1])
-		} else if strings.Contains(command, "publish"){
-			fmt.Fprintf(c, command)
-			continue
+
+		} else {
+			reqParts := strings.Split(req, " ")[:2]
+
+			switch reqCtx := strings.ToLower(reqParts[0]); reqCtx{
+				case "subscribe":{
+					SentRequest(req, c)
+					HandleTopic(c, *netReader, reqParts[1])
+				}
+				case "publish":{
+					SentRequest(req, c)
+				}
 		}
-		
-		fmt.Fprintf(c, command)
-
-		resp, err := netReader.ReadString('\n')
-
-		if err != nil {
-			log.Error.Panicln(err.Error())
-		}
-
-		fmt.Println(resp)
 	}
+}
 }
