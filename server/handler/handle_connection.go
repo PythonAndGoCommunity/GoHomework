@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"regexp"
 	"fmt"
 	"strings"
 	"bufio"
@@ -10,28 +9,50 @@ import (
 	"NonRelDB/util/json"
 	"NonRelDB/server/storage/inmemory"
 	"NonRelDB/server/topic"
+	"NonRelDB/util/regex"
 )
 
-var queryReg *regexp.Regexp
-var exitReg *regexp.Regexp
-var dumpReg *regexp.Regexp
-var subscribeReg *regexp.Regexp
-var unsubscribeReg *regexp.Regexp
-var topicNameReg *regexp.Regexp
-var publishReg *regexp.Regexp
-var publishTopicNameReg *regexp.Regexp
-var msgReg *regexp.Regexp
+func HandleRequest(req string, c net.Conn) rune{
+	if regex.QueryReg.MatchString(req){
+		resp:= HandleQuery(req)
+		SentResponse(resp, c)
+		return 'c'
 
-func init(){
-	queryReg = regexp.MustCompile("^(get\\s(.*))|(set\\s(.*)\\s\"(.*)\")|(del\\s(.*))|(keys\\s\"(.*?)\")$")
-	exitReg = regexp.MustCompile("^exit$")
-	dumpReg = regexp.MustCompile("^dump$")
-	subscribeReg = regexp.MustCompile("^subscribe\\s(.*)$")
-	unsubscribeReg = regexp.MustCompile("^unsubscrube\\s(.*)$")
-	topicNameReg = regexp.MustCompile("\\s(.*)$")
-	publishReg = regexp.MustCompile("^publish\\s(.*)\\s\"(.*)\"$")
-	publishTopicNameReg = regexp.MustCompile("\\s(.*)\\s")
-	msgReg = regexp.MustCompile("\"(.*)\"$")
+	} else if regex.ExitReg.MatchString(req){
+		log.Info.Printf("%s disconnected from server", c.RemoteAddr().String())
+		return 'r'
+
+	} else if regex.DumpReg.MatchString(req){
+		dbDump := string(json.PackMapToJSON((*inmemory.GetStorage().GetMap())))
+		fmt.Fprintf(c, dbDump + "\n")
+		log.Info.Printf("Sent db dump to %s", c.RemoteAddr().String())
+		return 'r'
+
+	} else {
+		reqParts := strings.Split(req, " ")[:2]
+
+		switch reqCtx := strings.ToLower(reqParts[0]); reqCtx{
+			case "subscribe":{
+				topic.Subscribe(reqParts[1], c)
+				return 'c'
+			}
+			case "unsubscribe":{
+				topic.Unsubscribe(reqParts[1], c)
+				return 'r'
+			}
+			case "publish":{
+				msg := regex.ValueReg.FindString(req)
+				topic.Publish(reqParts[1],msg)
+				return 'c'
+			}
+		}
+	}
+	return 'c'
+}
+
+func SentResponse(resp string, c net.Conn){
+	fmt.Fprintf(c, resp + "\n")
+	log.Info.Printf("Sent response to %s -> %s", c.RemoteAddr().String(), resp)
 }
 
 func HandleConnection(c net.Conn){
@@ -40,7 +61,6 @@ func HandleConnection(c net.Conn){
 	netReader := bufio.NewReader(c)
 	
 	for {
-
 		req, err := netReader.ReadString('\n')
 		req = strings.TrimSuffix(req,"\n")
 
@@ -51,35 +71,9 @@ func HandleConnection(c net.Conn){
 
 		log.Info.Printf("Received request from %s -> %s", c.RemoteAddr().String(), req)
 
-		if queryReg.MatchString(req){
-			resp := HandleQuery(req)
-			fmt.Fprintf(c, resp + "\n")
-			log.Info.Printf("Sent response to %s -> %s", c.RemoteAddr().String(), resp)
-
-		} else if exitReg.MatchString(req){
-			log.Info.Printf("%s disconnected from server", c.RemoteAddr().String())
-
-		} else if dumpReg.MatchString(req){
-			dbDump := string(json.PackMapToJSON((*inmemory.GetStorage().GetMap())))
-			fmt.Fprintf(c, dbDump + "\n")
-			log.Info.Printf("Sent db dump to %s", c.RemoteAddr().String())
-		
-		} else if subscribeReg.MatchString(req){
-			topicName := strings.Trim(topicNameReg.FindString(req), " ")
-			topic.Subscribe(topicName, c)
-			continue
-		
-		} else if unsubscribeReg.MatchString(req){
-			topicName := strings.Trim(topicNameReg.FindString(req), " ")
-			topic.Unsubscribe(topicName, c)
-			return
-		
-		} else if publishReg.MatchString(req){
-			topicName := strings.Trim(publishTopicNameReg.FindString(req), " ")
-			msg := strings.Trim(msgReg.FindString(req), "\"")
-			topic.Publish(topicName, msg)
-			continue
-			
+		switch handleCtx := HandleRequest(req, c); handleCtx{
+			case 'r': return
+			case 'c': continue
 		}
 	}
 }
