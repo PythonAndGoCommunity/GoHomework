@@ -10,7 +10,7 @@ import (
 	"NonRelDB/util/regex"
 )
 
-func SentRequest(req string, c net.Conn){
+func SendRequest(req string, c net.Conn){
 	fmt.Fprintf(c, req)
 }
 
@@ -26,7 +26,7 @@ func HandleConnection(c net.Conn){
 		}
 
 		if regex.QueryReg.MatchString(req){
-			SentRequest(req, c)
+			SendRequest(req, c)
 			resp, err := netReader.ReadString('\n')
 
 			if err != nil {
@@ -37,7 +37,7 @@ func HandleConnection(c net.Conn){
 
 		} else if regex.ExitReg.MatchString(req){
 			fmt.Println("Good bye")
-			SentRequest(req, c)
+			SendRequest(req, c)
 			return
 
 		} else {
@@ -45,11 +45,11 @@ func HandleConnection(c net.Conn){
 
 			switch reqCtx := strings.ToLower(reqParts[0]); reqCtx{
 				case "subscribe":{
-					SentRequest(req, c)
+					SendRequest(req, c)
 					HandleTopic(c, *netReader, reqParts[1])
 				}
 				case "publish":{
-					SentRequest(req, c)
+					SendRequest(req, c)
 				}
 		}
 	}
