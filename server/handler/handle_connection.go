@@ -12,6 +12,7 @@ import (
 	"NonRelDB/util/regex"
 )
 
+// HandleRequest handling request from client.
 func HandleRequest(req string, c net.Conn) rune{
 	if regex.QueryReg.MatchString(req){
 		resp:= HandleQuery(req)
@@ -50,11 +51,13 @@ func HandleRequest(req string, c net.Conn) rune{
 	return 'c'
 }
 
+// SentResponse sends response to specified connection.
 func SentResponse(resp string, c net.Conn){
 	fmt.Fprintf(c, resp + "\n")
 	log.Info.Printf("Sent response to %s -> %s", c.RemoteAddr().String(), resp)
 }
 
+// HandleConnection handling communication with client.
 func HandleConnection(c net.Conn){
 	defer c.Close()
 

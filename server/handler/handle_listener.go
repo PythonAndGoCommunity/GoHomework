@@ -5,6 +5,7 @@ import (
 	"NonRelDB/log"
 )
 
+// HandleListener accepts clients and runs their handlers.
 func HandleListener(l net.Listener){
 	defer l.Close()
 	for {

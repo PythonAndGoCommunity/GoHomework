@@ -27,6 +27,7 @@ func init() {
 	flag.Parse()
 }
 
+// storageInit init of storage.
 func storageInit() {
 	if mode == "memory" {
 		inmemory.InitDBInMemory()
@@ -35,6 +36,7 @@ func storageInit() {
 	}
 }
 
+// cleanup storage cleanup.
 func cleanup() {
 	sign := make(chan os.Signal, 2)
 	signal.Notify(sign, os.Interrupt, syscall.SIGTERM)
@@ -48,6 +50,7 @@ func cleanup() {
 	}()
 }
 
+// main entry point for server.
 func main() {
 	storageInit()
 	cleanup()

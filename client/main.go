@@ -27,6 +27,7 @@ func init(){
 	flag.Parse()
 }
 
+// main entry point for client.
 func main(){
 	c, err := net.Dial("tcp", host + ":" + port)
 	defer c.Close()
@@ -36,7 +37,6 @@ func main(){
 	}
 
 	if dump {
-		// c.Write([]byte("dump\n"))
 		fmt.Fprintf(c, "dump\n")
 		dbDump, err := bufio.NewReader(c).ReadString('\n')
 

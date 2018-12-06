@@ -6,6 +6,7 @@ import (
 	"NonRelDB/util/regex"
 )
 
+// HandleQuery handling queries to db.
 func HandleQuery(query string) string {
 	queryParts := strings.Split(query, " ")[:2]
 

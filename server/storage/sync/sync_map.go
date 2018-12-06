@@ -7,23 +7,23 @@ import (
 	"NonRelDB/log"
 )
 
-// Map | Map synchronized with mutex. 
+// Map map synchronized with mutex. 
 type Map struct {
 	sync.Mutex
 	m *map[string]string
 }
 
-// GetMap | Getter for map.
+// GetMap getter for map.
 func (sm *Map) GetMap() *map[string]string {
 	return sm.m
 }
 
-// SetMap | Setter for map.
+// SetMap setter for map.
 func (sm *Map) SetMap(m *map[string]string){
 	sm.m = m
 }
 
-// Get | Receives and key and returns value according its key.
+// Get receives and key and returns value according its key.
 func (sm *Map) Get(key string) string {
 	sm.Lock()
 	defer sm.Unlock()
@@ -35,7 +35,7 @@ func (sm *Map) Get(key string) string {
 	}
 }
 
-// Set | Set value according to key.
+// Set set value according to key.
 func (sm *Map) Set(key string, value string) string{
 	sm.Lock()
 	defer sm.Unlock()
@@ -43,7 +43,7 @@ func (sm *Map) Set(key string, value string) string{
 	return "Value has changed"
 }
 
-// Del | Del value according to key.
+// Del del value according to key.
 func (sm *Map) Del(key string) string{
 	sm.Lock()
 	defer sm.Unlock()
@@ -56,7 +56,7 @@ func (sm *Map) Del(key string) string{
 	}
 }
 
-// Keys | Returns keys which match to pattern.
+// Keys returns keys which match to pattern.
 func (sm *Map) Keys(pattern string) string {
 	sm.Lock()
 	defer sm.Unlock()

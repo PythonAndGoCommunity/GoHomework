@@ -8,21 +8,20 @@ import (
 	"NonRelDB/server/storage/sync"
 )
 
-// Storage | Global variable for kv storage.
-
+// Global variable for kv storage.
 var storage sync.Map
 
-// GetStorage | Getter for storage.
+// GetStorage getter for storage.
 func GetStorage() *sync.Map {
 	return &storage
 }
 
-// SetStorage | Setter for storage
+// SetStorage setter for storage
 func SetStorage(sm sync.Map){
 	storage = sm
 }
 
-// InitDBInMemory | Init kv db in memory.
+// InitDBInMemory init kv db in memory.
 func InitDBInMemory(){
 	storage := sync.Map{}
 	m := make(map[string]string)
@@ -30,7 +29,7 @@ func InitDBInMemory(){
 	log.Info.Println("DB successfully created in-memory")
 }
 
-// InitDBFromStorage | Receives filename and load its content to inmemory storage.
+// InitDBFromStorage receives filename and load its content to inmemory storage.
 func InitDBFromStorage(filename string){
 	defer log.Info.Printf("DB successfully initialized from %s", filename)
 
@@ -53,7 +52,7 @@ func InitDBFromStorage(filename string){
 	storage.SetMap(json.UnpackFromJSON(jb))
 }
 
-// SaveDBToStorage | Receives file name and saves inmemory storage to it.
+// SaveDBToStorage receives file name and saves inmemory storage to it.
 func SaveDBToStorage(filename string){
 	jb := json.PackMapToJSON((*storage.GetMap()))
 	j := string(jb)

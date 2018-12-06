@@ -10,10 +10,12 @@ import (
 	"NonRelDB/util/regex"
 )
 
+// SendRequest sends request to specified connection.
 func SendRequest(req string, c net.Conn){
 	fmt.Fprintf(c, req)
 }
 
+// HandleConnection handling communication with server.
 func HandleConnection(c net.Conn){
 	consoleReader := bufio.NewReader(os.Stdin)
 	netReader := bufio.NewReader(c)

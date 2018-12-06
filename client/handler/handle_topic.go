@@ -10,6 +10,7 @@ import (
 	"syscall"
 )
 
+// quit Handling Ctrl + C press.
 func quit(c net.Conn, topic string) {
 	sign := make(chan os.Signal, 2)
 	signal.Notify(sign, os.Interrupt, syscall.SIGTERM)
@@ -21,6 +22,7 @@ func quit(c net.Conn, topic string) {
 	}()
 }
 
+// HandleTopic listening messages from specified topic.
 func HandleTopic(c net.Conn, r bufio.Reader, topic string){
 	quit(c, topic)
 	fmt.Printf("Reading messages from %s... (press Ctrl + C to stop)\n", topic)
