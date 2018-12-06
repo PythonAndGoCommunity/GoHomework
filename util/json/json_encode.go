@@ -5,7 +5,7 @@ import (
 	"NonRelDB/log"
 )
 
-// PackToJSON | Receives string key and interface value and returns json bytes.
+// PackToJSON receives string key and interface value and returns json bytes.
 func PackToJSON(key string, value string) []byte{
 	m := map[string]string{key : value}
 	b, err := json.Marshal(m)
@@ -15,6 +15,7 @@ func PackToJSON(key string, value string) []byte{
 	return b
 }
 
+// PackToJSONIndent receives string key and interface value and returns json bytes with indent.
 func PackToJSONIndent(key string, value string) []byte{
 	m := map[string]string{key : value}
 	b, err := json.MarshalIndent(m,"", " ")
@@ -24,7 +25,7 @@ func PackToJSONIndent(key string, value string) []byte{
 	return b
 }
 
-// PackMapToJSON | Receives map and returns json bytes.
+// PackMapToJSON receives map and returns json bytes.
 func PackMapToJSON(m map[string]string) []byte{
 	b, err := json.Marshal(m)
 	if err != nil{
@@ -33,6 +34,7 @@ func PackMapToJSON(m map[string]string) []byte{
 	return b
 }
 
+// PackMapToJSONIndent receives map and returns json bytes with indent.
 func PackMapToJSONIndent(m map[string]string) []byte{
 	b, err := json.MarshalIndent(m, "", " ")
 	if err != nil{

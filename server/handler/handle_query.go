@@ -15,14 +15,14 @@ func HandleQuery(query string) string {
 			return inmemory.GetStorage().Get(queryParts[1])
 		}
 		case "set":{
-			value := strings.Trim(regex.ValueReg.FindString(query),"\"")
+			value := strings.Trim(regex.DoubleQuoteReg.FindString(query),"\"")
 			return inmemory.GetStorage().Set(queryParts[1], value)
 		} 
 		case "del":{
 			return inmemory.GetStorage().Del(queryParts[1])
 		}
 		case "keys":{
-			pattern := regex.ValueReg.FindString(query)
+			pattern := regex.DoubleQuoteReg.FindString(query)
 			return inmemory.GetStorage().Keys(pattern)
 		}
 	}

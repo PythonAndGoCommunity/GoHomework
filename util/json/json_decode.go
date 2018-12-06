@@ -5,7 +5,7 @@ import (
 	"NonRelDB/log"
 )
 
-// UnpackFromJSON | Receives json bytes and returns map pointer.
+// UnpackFromJSON receives json bytes and returns map pointer.
 func UnpackFromJSON(b []byte) *map[string]string{
 	m := make(map[string]string)
 	err := json.Unmarshal(b, &m)

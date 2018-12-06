@@ -4,13 +4,15 @@ import (
 	"regexp"
 )
 
-var ValueReg *regexp.Regexp
-var QueryReg *regexp.Regexp
-var ExitReg *regexp.Regexp
-var DumpReg *regexp.Regexp
+var (
+	DoubleQuoteReg *regexp.Regexp
+	QueryReg *regexp.Regexp
+	ExitReg *regexp.Regexp
+	DumpReg *regexp.Regexp
+)
 
 func init(){ 
-	ValueReg = regexp.MustCompile("\"(.*)\"")
+	DoubleQuoteReg = regexp.MustCompile("\"(.*)\"")
 	QueryReg = regexp.MustCompile("^(get|set|del|keys)")
 	ExitReg = regexp.MustCompile("^exit$")
 	DumpReg = regexp.MustCompile("^dump$")

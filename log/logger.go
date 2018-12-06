@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// Presents 4 logging levels: trace, info, warning and error.
 var (
 	Trace *log.Logger
 	Info *log.Logger

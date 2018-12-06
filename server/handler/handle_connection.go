@@ -16,7 +16,7 @@ import (
 func HandleRequest(req string, c net.Conn) rune{
 	if regex.QueryReg.MatchString(req){
 		resp:= HandleQuery(req)
-		SentResponse(resp, c)
+		SendResponse(resp, c)
 		return 'c'
 
 	} else if regex.ExitReg.MatchString(req){
@@ -42,7 +42,7 @@ func HandleRequest(req string, c net.Conn) rune{
 				return 'r'
 			}
 			case "publish":{
-				msg := regex.ValueReg.FindString(req)
+				msg := regex.DoubleQuoteReg.FindString(req)
 				topic.Publish(reqParts[1],msg)
 				return 'c'
 			}
@@ -51,8 +51,8 @@ func HandleRequest(req string, c net.Conn) rune{
 	return 'c'
 }
 
-// SentResponse sends response to specified connection.
-func SentResponse(resp string, c net.Conn){
+// SendResponse sends response to specified connection.
+func SendResponse(resp string, c net.Conn){
 	fmt.Fprintf(c, resp + "\n")
 	log.Info.Printf("Sent response to %s -> %s", c.RemoteAddr().String(), resp)
 }

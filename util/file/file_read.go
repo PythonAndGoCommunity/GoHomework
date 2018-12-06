@@ -5,7 +5,7 @@ import (
 	"NonRelDB/log"
 )
 
-// OpenAndReadString | receives file name, reads this file and returns its string content.
+// OpenAndReadString receives file name, reads this file and returns its string content.
 func OpenAndReadString(name string) string{
 	b, err := ioutil.ReadFile(name)
 	
@@ -16,7 +16,7 @@ func OpenAndReadString(name string) string{
 	return string(b)
 }
 
-// OpenAndRead | Receives file name, reads this file and returns byte array from it. 
+// OpenAndRead receives file name, reads this file and returns byte array from it. 
 func OpenAndRead(name string) []byte{
 	b, err := ioutil.ReadFile(name)
 	

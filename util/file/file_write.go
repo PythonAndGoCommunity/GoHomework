@@ -5,7 +5,7 @@ import (
 	"NonRelDB/log"
 )
 
-// CreateAndWriteString | Creates file and writes string to it.
+// CreateAndWriteString creates file and writes string to it.
 func CreateAndWriteString(name string, value string){
 	f, err := os.Create(name)
 
@@ -21,7 +21,7 @@ func CreateAndWriteString(name string, value string){
 	}
 }
 
-// CreateAndWrite | Creates file and writes byte array to it.
+// CreateAndWrite creates file and writes byte array to it.
 func CreateAndWrite(name string, value []byte){
 	f, err := os.Create(name)
 
