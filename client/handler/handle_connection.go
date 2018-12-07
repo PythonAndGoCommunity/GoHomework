@@ -46,19 +46,17 @@ func HandleConnection(c net.Conn){
 		} else if regex.TopicReg.MatchString(req) {
 			reqParts := strings.Split(req, " ")
 
-			switch reqCtx := len(reqParts); reqCtx{
-				case 2:{
+			if len(reqParts) == 2{
 					if strings.ToLower(reqParts[0]) == "subscribe"{
 							SendRequest(req, c)
 							HandleTopic(c, *netReader, reqParts[1])
 					}
-				}
-				case 3:{
+			} else if len(reqParts) >= 3{
 					if strings.ToLower(reqParts[0]) == "publish"{
 						SendRequest(req, c)
 					}
-				}
 			}
+
 		} else {
 			fmt.Println("Bad request")
 			continue 
