@@ -5,7 +5,7 @@ import (
 	"NonRelDB/util/json"
 	"NonRelDB/util/file"
 	"NonRelDB/log"
-	"NonRelDB/server/storage/sync"
+	"NonRelDB/util/sync"
 )
 
 // Global variable for kv storage.
