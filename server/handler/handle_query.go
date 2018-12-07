@@ -23,7 +23,7 @@ func HandleQuery(query string) string {
 				return inmemory.GetStorage().Del(queryParts[1])
 			}
 			case "keys":{
-				pattern := regex.DoubleQuoteReg.FindString(query)
+				pattern := strings.Trim(regex.DoubleQuoteReg.FindString(query),"\"")
 				return inmemory.GetStorage().Keys(pattern)
 			}
 		}
