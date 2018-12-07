@@ -29,24 +29,28 @@ func HandleRequest(req string, c net.Conn) rune{
 		log.Info.Printf("Sent db dump to %s", c.RemoteAddr().String())
 		return 'r'
 
-	} else {
-		reqParts := strings.Split(req, " ")[:2]
+	} else if regex.TopicReg.MatchString(req){
+		reqParts := strings.Split(req, " ")
 
-		switch reqCtx := strings.ToLower(reqParts[0]); reqCtx{
-			case "subscribe":{
-				topic.Subscribe(reqParts[1], c)
-				return 'c'
-			}
-			case "unsubscribe":{
-				topic.Unsubscribe(reqParts[1], c)
-				return 'r'
-			}
-			case "publish":{
-				msg := regex.DoubleQuoteReg.FindString(req)
-				topic.Publish(reqParts[1],msg)
-				return 'c'
-			}
+		if len(reqParts) >= 2{
+			switch reqCtx := strings.ToLower(reqParts[0]); reqCtx{
+				case "subscribe":{
+					topic.Subscribe(reqParts[1], c)
+					return 'c'
+				}
+				case "unsubscribe":{
+					topic.Unsubscribe(reqParts[1], c)
+					return 'r'
+				}
+				case "publish":{
+					msg := regex.DoubleQuoteReg.FindString(req)
+					topic.Publish(reqParts[1],msg)
+					return 'c'
+				}
+			}			
 		}
+	} else {
+		SendResponse("Bad request", c)
 	}
 	return 'c'
 }

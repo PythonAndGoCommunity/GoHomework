@@ -12,7 +12,7 @@ import (
 
 // SendRequest sends request to specified connection.
 func SendRequest(req string, c net.Conn){
-	fmt.Fprintf(c, req)
+	fmt.Fprintf(c, req + "\n")
 }
 
 // HandleConnection handling communication with server.
@@ -22,7 +22,8 @@ func HandleConnection(c net.Conn){
 	for {
 		fmt.Print("NonRelDB> ")
 		req, err := consoleReader.ReadString('\n')
-		
+		req = strings.Trim(req, "\n")
+
 		if err != nil {
 			log.Error.Panicln(err.Error())
 		}
@@ -42,18 +43,25 @@ func HandleConnection(c net.Conn){
 			SendRequest(req, c)
 			return
 
-		} else {
-			reqParts := strings.Split(req, " ")[:2]
+		} else if regex.TopicReg.MatchString(req) {
+			reqParts := strings.Split(req, " ")
 
-			switch reqCtx := strings.ToLower(reqParts[0]); reqCtx{
-				case "subscribe":{
-					SendRequest(req, c)
-					HandleTopic(c, *netReader, reqParts[1])
+			switch reqPartsLen := len(reqParts); reqPartsLen{
+				case 2:{
+					if strings.ToLower(reqParts[0]) == "subscribe"{
+							SendRequest(req, c)
+							HandleTopic(c, *netReader, reqParts[1])
+					}
 				}
-				case "publish":{
-					SendRequest(req, c)
+				case 3:{
+					if strings.ToLower(reqParts[0]) == "publish"{
+						SendRequest(req, c)
+					}
 				}
+			}
+		} else {
+			fmt.Println("Bad request")
+			continue 
 		}
 	}
-}
 }
