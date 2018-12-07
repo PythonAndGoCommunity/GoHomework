@@ -46,7 +46,7 @@ func HandleConnection(c net.Conn){
 		} else if regex.TopicReg.MatchString(req) {
 			reqParts := strings.Split(req, " ")
 
-			switch reqPartsLen := len(reqParts); reqPartsLen{
+			switch reqCtx := len(reqParts); reqCtx{
 				case 2:{
 					if strings.ToLower(reqParts[0]) == "subscribe"{
 							SendRequest(req, c)
