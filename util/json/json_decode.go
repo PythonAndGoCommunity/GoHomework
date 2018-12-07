@@ -6,12 +6,12 @@ import (
 )
 
 // UnpackFromJSON receives json bytes and returns map pointer.
-func UnpackFromJSON(b []byte) *map[string]string{
-	m := make(map[string]string)
-	err := json.Unmarshal(b, &m)
+func UnpackFromJSON(bytes []byte) *map[string]string{
+	kvMap := make(map[string]string)
+	err := json.Unmarshal(bytes, &kvMap)
 	if err != nil{
 		log.Warning.Println(err.Error())
 		log.Warning.Println("No bytes. Will be returned zero map")
 	}
-	return &m
+	return &kvMap
 }

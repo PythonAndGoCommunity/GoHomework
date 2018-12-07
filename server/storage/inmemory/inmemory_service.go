@@ -17,15 +17,15 @@ func GetStorage() *sync.Map {
 }
 
 // SetStorage setter for storage
-func SetStorage(sm sync.Map){
-	storage = sm
+func SetStorage(syncMap sync.Map){
+	storage = syncMap
 }
 
 // InitDBInMemory init kv db in memory.
 func InitDBInMemory(){
 	storage := sync.Map{}
-	m := make(map[string]string)
-	storage.SetMap(&m)
+	syncMap := make(map[string]string)
+	storage.SetMap(&syncMap)
 	log.Info.Println("DB successfully created in-memory")
 }
 
@@ -47,16 +47,16 @@ func InitDBFromStorage(filename string){
 		f.Close()
 	}
 
-	j := file.OpenAndReadString(filename)
-	jb := []byte(j)
-	storage.SetMap(json.UnpackFromJSON(jb))
+	jsonString := file.OpenAndReadString(filename)
+	jsonBytes := []byte(jsonString)
+	storage.SetMap(json.UnpackFromJSON(jsonBytes))
 }
 
 // SaveDBToStorage receives file name and saves inmemory storage to it.
 func SaveDBToStorage(filename string){
-	jb := json.PackMapToJSON((*storage.GetMap()))
-	j := string(jb)
+	jsonBytes := json.PackMapToJSON((*storage.GetMap()))
+	jsonString := string(jsonBytes)
 
-	file.CreateAndWriteString(filename, j)
+	file.CreateAndWriteString(filename, jsonString)
 	log.Info.Printf("DB successfully saved to %s", filename)
 }

@@ -7,38 +7,38 @@ import (
 
 // PackToJSON receives string key and interface value and returns json bytes.
 func PackToJSON(key string, value string) []byte{
-	m := map[string]string{key : value}
-	b, err := json.Marshal(m)
+	kvMap := map[string]string{key : value}
+	bytes, err := json.Marshal(kvMap)
 	if err != nil{
 		log.Error.Println(err.Error())
 	}
-	return b
+	return bytes
 }
 
 // PackToJSONIndent receives string key and interface value and returns json bytes with indent.
 func PackToJSONIndent(key string, value string) []byte{
-	m := map[string]string{key : value}
-	b, err := json.MarshalIndent(m,"", " ")
+	kvMap := map[string]string{key : value}
+	bytes, err := json.MarshalIndent(kvMap,"", " ")
 	if err != nil{
 		log.Error.Println(err.Error())
 	}
-	return b
+	return bytes
 }
 
 // PackMapToJSON receives map and returns json bytes.
-func PackMapToJSON(m map[string]string) []byte{
-	b, err := json.Marshal(m)
+func PackMapToJSON(kvMap map[string]string) []byte{
+	bytes, err := json.Marshal(kvMap)
 	if err != nil{
 		log.Error.Println(err.Error())
 	}
-	return b
+	return bytes
 }
 
 // PackMapToJSONIndent receives map and returns json bytes with indent.
-func PackMapToJSONIndent(m map[string]string) []byte{
-	b, err := json.MarshalIndent(m, "", " ")
+func PackMapToJSONIndent(kvMap map[string]string) []byte{
+	bytes, err := json.MarshalIndent(kvMap, "", " ")
 	if err != nil{
 		log.Error.Println(err.Error())
 	}
-	return b
+	return bytes
 }

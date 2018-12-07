@@ -7,15 +7,15 @@ import (
 
 // CreateAndWriteString creates file and writes string to it.
 func CreateAndWriteString(name string, value string){
-	f, err := os.Create(name)
+	file, err := os.Create(name)
 
-	defer f.Close()
+	defer file.Close()
 
 	if err != nil{
 		log.Error.Panicln(err.Error())
 	}
 
-	_, err = f.WriteString(value)
+	_, err = file.WriteString(value)
 	if err != nil{
 		log.Error.Panicln(err.Error())
 	}
@@ -23,15 +23,15 @@ func CreateAndWriteString(name string, value string){
 
 // CreateAndWrite creates file and writes byte array to it.
 func CreateAndWrite(name string, value []byte){
-	f, err := os.Create(name)
+	file, err := os.Create(name)
 
-	defer f.Close()
+	defer file.Close()
 
 	if err != nil{
 		log.Error.Panicln(err.Error())
 	}
 
-	_, err = f.Write(value)
+	_, err = file.Write(value)
 	if err != nil{
 		log.Error.Panicln(err.Error())
 	}
