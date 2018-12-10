@@ -73,3 +73,12 @@ func TestDumpReg__Dump__Success(t *testing.T) {
 func TestDumpReg__DumpWithSpaces__Fail(t *testing.T) {
 	assert.False(t, DumpReg.MatchString(" dump "))
 }
+
+func TestRestoreReg__Restore__Success(t *testing.T) {
+	assert.True(t, RestoreReg.MatchString("restore"))
+}
+
+func TestRestoreReg__RestoreWithSpaces__Fail(t *testing.T) {
+	assert.False(t, RestoreReg.MatchString(" restore "))
+}
+
