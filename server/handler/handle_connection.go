@@ -48,7 +48,18 @@ func HandleConnection(c net.Conn){
 			fmt.Fprintf(c, dbDump + "\n")
 			log.Info.Printf("Sent db dump to %s", c.RemoteAddr().String())
 			return
-	
+
+		} else if regex.RestoreReg.MatchString(req){
+			dbDump, err := netReader.ReadString('\n')
+
+			if err != nil {
+				log.Warning.Println(err.Error())
+			}
+
+			inmemory.RestoreDBFromDump([]byte(dbDump))
+			log.Info.Printf("Successfully restored dump from %s", c.RemoteAddr().String())
+			return
+
 		} else if regex.TopicReg.MatchString(req){
 			reqParts := strings.Split(req, " ")
 	

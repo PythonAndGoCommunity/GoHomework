@@ -52,6 +52,11 @@ func InitDBFromStorage(filename string){
 	storage.SetMap(json.UnpackFromJSON(jsonBytes))
 }
 
+// RestoreDBFromDump restores db from received dump. 
+func RestoreDBFromDump(dump []byte){
+	storage.SetMap(json.UnpackFromJSON(dump))
+}
+
 // SaveDBToStorage receives file name and saves inmemory storage to it.
 func SaveDBToStorage(filename string){
 	jsonBytes := json.PackMapToJSON((*storage.GetMap()))

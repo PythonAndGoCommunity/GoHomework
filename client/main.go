@@ -1,7 +1,7 @@
 package main
 
 import (
-	"NonRelDB/util/file"
+	"os"
 	"fmt"
 	"bufio"
 	"net"
@@ -22,8 +22,7 @@ func init(){
 	flag.StringVar(&port, "port", "9090", "Defines host port")
 	flag.StringVar(&port, "p", "9090", "Defines host port")
 	flag.BoolVar(&dump, "dump", false, "Requests db dump in json format from server")
-	flag.BoolVar(&restore, "restore", false, "Restores received dump to file")
-	flag.StringVar(&location, "location", "dump.json", "Defines location of dump")
+	flag.BoolVar(&restore, "restore", false, "Restores db from dumped file")
 	flag.Parse()
 }
 
@@ -45,10 +44,18 @@ func main(){
 		}
 
 		fmt.Println(dbDump)
+		return
+	}
 
-		if restore {
-			file.CreateAndWriteString(location, dbDump)
+	if restore {
+		fmt.Fprintf(c, "restore\n")
+		dbRestore, err := bufio.NewReader(os.Stdin).ReadString('\n')
+
+		if err != nil {
+			log.Error.Panicln(err.Error())
 		}
+
+		fmt.Fprintf(c, dbRestore)
 		return
 	}
 

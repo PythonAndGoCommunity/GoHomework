@@ -10,6 +10,7 @@ var (
 	TopicReg *regexp.Regexp
 	ExitReg *regexp.Regexp
 	DumpReg *regexp.Regexp
+	RestoreReg *regexp.Regexp
 )
 
 func init(){ 
@@ -18,4 +19,5 @@ func init(){
 	TopicReg = regexp.MustCompile("^(subscribe|publish|unsubscribe)")
 	ExitReg = regexp.MustCompile("^exit$")
 	DumpReg = regexp.MustCompile("^dump$")
+	RestoreReg = regexp.MustCompile("^restore$")
 }
