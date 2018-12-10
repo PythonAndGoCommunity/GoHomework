@@ -2,3 +2,4 @@ client/dump.json
 client/main
 server/main
 server/storage.json
+*.out
