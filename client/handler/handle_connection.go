@@ -20,7 +20,7 @@ func HandleConnection(c net.Conn){
 	consoleReader := bufio.NewReader(os.Stdin)
 	netReader := bufio.NewReader(c)
 	for {
-		fmt.Print("NonRelDB> ")
+		fmt.Printf("%s> ", c.RemoteAddr().String())
 		req, err := consoleReader.ReadString('\n')
 		req = strings.Trim(req, "\n")
 
