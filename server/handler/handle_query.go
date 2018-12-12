@@ -3,7 +3,6 @@ package handler
 import (
 	"NonRelDB/util/sync"
 	"strings"
-	"NonRelDB/server/storage/inmemory"
 	"NonRelDB/util/regex"
 )
 
@@ -25,7 +24,7 @@ func HandleQuery(query string, syncMap *sync.Map) string {
 			}
 			case "keys":{
 				pattern := strings.Trim(regex.DoubleQuoteReg.FindString(query),"\"")
-				return inmemory.GetStorage().Keys(pattern)
+				return syncMap.Keys(pattern)
 			}
 		}
 	}
