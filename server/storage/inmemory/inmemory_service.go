@@ -9,21 +9,21 @@ import (
 )
 
 // Global variable for kv storage.
-var storage sync.Map
+var storage *sync.Map
 
 // GetStorage getter for storage.
 func GetStorage() *sync.Map {
-	return &storage
+	return storage
 }
 
 // SetStorage setter for storage
-func SetStorage(syncMap sync.Map){
+func SetStorage(syncMap *sync.Map){
 	storage = syncMap
 }
 
 // InitDBInMemory init kv db in memory.
 func InitDBInMemory(){
-	storage := sync.Map{}
+	storage = &sync.Map{}
 	syncMap := make(map[string]string)
 	storage.SetMap(&syncMap)
 	log.Info.Println("DB successfully created in-memory")
@@ -31,8 +31,7 @@ func InitDBInMemory(){
 
 // InitDBFromStorage receives filename and load its content to inmemory storage.
 func InitDBFromStorage(filename string){
-	defer log.Info.Printf("DB successfully initialized from %s", filename)
-
+	storage = &sync.Map{}
 	_, err := os.Stat(filename)
 
 	if os.IsNotExist(err) {
@@ -50,6 +49,7 @@ func InitDBFromStorage(filename string){
 	jsonString := file.OpenAndReadString(filename)
 	jsonBytes := []byte(jsonString)
 	storage.SetMap(json.UnpackFromJSON(jsonBytes))
+	log.Info.Printf("DB successfully initialized from %s", filename)
 }
 
 // RestoreDBFromDump restores db from received dump. 
