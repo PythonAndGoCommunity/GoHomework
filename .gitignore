@@ -1,5 +1,4 @@
-client/dump.json
-client/main
-server/main
-server/storage.json
+client/client
+server/server
 *.out
+*.json
