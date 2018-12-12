@@ -36,7 +36,7 @@ func HandleConnection(c net.Conn){
 		log.Info.Printf("Received request from %s -> %s", c.RemoteAddr().String(), req)
 
 		if regex.QueryReg.MatchString(req){
-			resp:= HandleQuery(req)
+			resp:= HandleQuery(req, inmemory.GetStorage())
 			SendResponse(resp, c)
 	
 		} else if regex.ExitReg.MatchString(req){
