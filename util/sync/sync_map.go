@@ -70,7 +70,7 @@ func (syncMap *Map) Keys(pattern string) string {
 		return "Pattern is incorrect"
 	}
 
-	for key := range ((*syncMap.storage)) {
+	for key := range (*syncMap.storage) {
 		if regex.MatchString(key) {
 			keys = append(keys, key)
 		}
