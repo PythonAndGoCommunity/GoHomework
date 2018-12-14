@@ -41,4 +41,6 @@ check:
 ################ Docker Targets ####################
 
 ################ Test Targets ####################
-
+test:
+	go test -coverprofile coverage.out
+	go tool cover -html coverage.out

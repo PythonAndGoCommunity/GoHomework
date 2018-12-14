@@ -11,12 +11,6 @@ import (
 	"sync"
 )
 
-var address = "127.0.0.1"
-var port, mode string
-var dataMutex = sync.RWMutex{}
-var mapData = make(map[string]string)
-var diskDir = "data.txt"
-
 type cmdFlagHandler struct { // different flags handler
 	options       []string
 	defaultVal    string
@@ -29,6 +23,12 @@ type command struct {
 	result chan string
 }
 
+var address = "127.0.0.1"
+var port, mode string
+var dataMutex = sync.RWMutex{}
+var diskDir = "ServerData.txt" // defaulf file for "-m=disk"option
+var commands = make(chan command)
+
 func main() {
 	port, mode = cmdFlagParse() // parsing results from cmd
 	fullAddress := address + ":" + port
@@ -37,13 +37,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 	defer l.Close()
+
 	log.Printf("Server is running on %s\n", fullAddress)
 	log.Println("Ready to accept connections")
 
-	commands := make(chan command)
-	go storage(commands) // performing client's commands
+	var mapData = make(map[string]string) // creation of map for server data
+	createStorage(mapData)                // creation of storage
 
 	for {
 		conn, err := l.Accept()
@@ -54,7 +54,7 @@ func main() {
 	}
 }
 
-func contains(strs []string, str string) bool {
+func contains(strs []string, str string) bool { // function for flag parsing
 	if strs == nil {
 		return true
 	}
@@ -80,6 +80,7 @@ func cmdFlagParse() (string, string) {
 		possibleRange: []string{"ram", "disk"},
 	}
 
+	// long and short forms are for long and short flags, e.g. -p and --port
 	portShortResult := flag.String(portHandler.options[0], portHandler.defaultVal, portHandler.warning)
 	portLongResult := flag.String(portHandler.options[1], portHandler.defaultVal, portHandler.warning)
 
@@ -113,13 +114,21 @@ func handle(commands chan command, conn net.Conn) { // client input processing
 	}()
 
 	log.Println("Connection from", conn.RemoteAddr())
-
 	for {
-		msg, _ := bufio.NewReader(conn).ReadString('\n')
-		if msg == "" {
-			continue
+		msg, err := bufio.NewReader(conn).ReadString('\n')
+		// if client was unexpectadly unconnected, server is able to detect it
+		// and close connection via following lines:
+		if err != nil {
+			return
 		}
-		flds := strings.Fields(msg)
+
+		flds := strings.Fields(msg) // result formatting
+
+		if len(flds) > 0 {
+			if flds[0] == "EXIT" { // decent exit processing
+				return
+			}
+		}
 
 		result := make(chan string)
 		commands <- command{
@@ -130,27 +139,43 @@ func handle(commands chan command, conn net.Conn) { // client input processing
 	}
 }
 
-func storage(cmd chan command) {
+func createStorage(mapData map[string]string, testStrs ...string) string {
+	go storage(commands, mapData) // performing client's commands
+
+	if testStrs != nil { // it is here just for test purposes
+		result := make(chan string)
+		flds := strings.Fields(testStrs[0])
+		commands <- command{
+			fields: flds,
+			result: result,
+		}
+		return <-result
+	}
+	return ""
+}
+
+func storage(cmd chan command, mapData map[string]string) {
 	for cmd := range cmd {
 		if len(cmd.fields) < 1 {
 			cmd.result <- ""
 			continue
 		}
 		if len(cmd.fields) < 2 {
-			cmd.result <- "Expected at least 2 arguments"
+			cmd.result <- "Expected at least 2 arguments!"
 			continue
 		}
 
-		fmt.Println("Command:", cmd.fields)
 		switch cmd.fields[0] {
 		case "GET":
 			dataMutex.RLock()
 			if mode == "disk" {
-				if err := readFromFile(); err != nil {
+				var err error
+				if mapData, err = readFromFile(); err != nil {
 					panic(err)
 				}
 			}
-			if val, ok := mapData[cmd.fields[1]]; !ok {
+			val, ok := mapData[cmd.fields[1]]
+			if !ok {
 				cmd.result <- "nil"
 			} else {
 				cmd.result <- val
@@ -158,22 +183,23 @@ func storage(cmd chan command) {
 			dataMutex.RUnlock()
 
 		case "SET":
-			dataMutex.Lock()
 			if len(cmd.fields) < 3 {
-				cmd.result <- "Warning: EXPECTED VALUE"
+				cmd.result <- "Expected value!"
 				continue
 			} else if len(cmd.fields) > 3 {
-				cmd.result <- "Expected Key and Value"
+				cmd.result <- "Expected Key and Value!"
 				continue
 			}
+			dataMutex.Lock()
 			if mode == "disk" {
-				if err := readFromFile(); err != nil {
+				var err error
+				if mapData, err = readFromFile(); err != nil {
 					panic(err)
 				}
 			}
 			mapData[cmd.fields[1]] = cmd.fields[2]
 			if mode == "disk" {
-				if err := writeToFile(); err != nil {
+				if err := writeToFile(mapData); err != nil {
 					panic(err)
 				}
 			}
@@ -183,13 +209,14 @@ func storage(cmd chan command) {
 		case "DEL":
 			dataMutex.Lock()
 			if mode == "disk" {
-				if err := readFromFile(); err != nil {
+				var err error
+				if mapData, err = readFromFile(); err != nil {
 					panic(err)
 				}
 			}
 			delete(mapData, cmd.fields[1])
 			if mode == "disk" {
-				if err := writeToFile(); err != nil {
+				if err := writeToFile(mapData); err != nil {
 					panic(err)
 				}
 			}
@@ -203,10 +230,11 @@ func storage(cmd chan command) {
 }
 
 // reading from and writing to disk via following functions:
-func readFromFile() error {
+func readFromFile() (map[string]string, error) {
+	var mapData = make(map[string]string)
 	file, err := os.Open(diskDir)
 	if err != nil {
-		return err
+		return mapData, err
 	}
 	defer file.Close()
 
@@ -220,10 +248,10 @@ func readFromFile() error {
 		splitted := strings.Fields(string(line))
 		mapData[splitted[0]] = splitted[1]
 	}
-	return scanner.Err()
+	return mapData, scanner.Err()
 }
 
-func writeToFile() error {
+func writeToFile(mapData map[string]string) error {
 	file, err := os.Create(diskDir)
 	if err != nil {
 		return err
