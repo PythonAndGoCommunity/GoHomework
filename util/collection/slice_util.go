@@ -6,8 +6,8 @@ import (
 
 // ConnIndex returns index of neccessary element in net.Conn slice if found, otherwise -1.
 func ConnIndex(slice []net.Conn, value net.Conn) int{
-	for index, slice_value := range slice {
-		if slice_value == value {
+	for index, sliceValue := range slice {
+		if sliceValue == value {
 			return index
 		}
 	}

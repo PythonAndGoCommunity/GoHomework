@@ -30,9 +30,8 @@ func (syncMap *Map) Get(key string) string {
 	v := (*syncMap.storage)[key]
 	if v != ""{
 		return v;
-	} else {
-		return "Value with this key not found"
 	}
+	return "Value with this key not found"
 }
 
 // Set set value according to key.
@@ -51,9 +50,8 @@ func (syncMap *Map) Del(key string) string{
 	if v != "" {
 		delete((*syncMap.storage),key)
 		return v;
-	} else {
-		return "Value with this key not found"
 	}
+	return "Value with this key not found"
 }
 
 // Keys returns keys which match to pattern.
@@ -78,7 +76,6 @@ func (syncMap *Map) Keys(pattern string) string {
 
 	if keys != nil {
 		return strings.Join(keys,",")
-	} else {
-		return "Keys with this pattern not found"
 	}
+	return "Keys with this pattern not found"
 }
