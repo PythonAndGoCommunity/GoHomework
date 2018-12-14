@@ -4,33 +4,11 @@ VERSION := $(shell cat VERSION)
 
 .PHONY: fmt
 check:
-	go vet $(REPOSITORY_PATH)/server
-	go vet $(REPOSITORY_PATH)/client
-	go vet $(REPOSITORY_PATH)/log
-	go vet $(REPOSITORY_PATH)/util/collection
-	go vet $(REPOSITORY_PATH)/util/file
-	go vet $(REPOSITORY_PATH)/util/json
-	go vet $(REPOSITORY_PATH)/util/regex
-	go vet $(REPOSITORY_PATH)/util/sync
+	go vet NonRelDB/...
 
-	goimports $(REPOSITORY_PATH)/server
-	goimports $(REPOSITORY_PATH)/client
-	goimports $(REPOSITORY_PATH)/log
-	goimports $(REPOSITORY_PATH)/util/collection
-	goimports $(REPOSITORY_PATH)/util/file
-	goimports $(REPOSITORY_PATH)/util/json
-	goimports $(REPOSITORY_PATH)/util/regex
-	goimports $(REPOSITORY_PATH)/util/sync
+	goimports **/*.go
 
-
-	golint $(REPOSITORY_PATH)/server
-	golint $(REPOSITORY_PATH)/client
-	golint $(REPOSITORY_PATH)/log
-	golint $(REPOSITORY_PATH)/util/collection
-	golint $(REPOSITORY_PATH)/util/file
-	golint $(REPOSITORY_PATH)/util/json
-	golint $(REPOSITORY_PATH)/util/regex
-	golint $(REPOSITORY_PATH)/util/sync
+	golint **/*.go
 
 clean:
 	rm server/server && rm client/client
@@ -49,12 +27,11 @@ run:
 
 test: 
 	echo "Running unit & integration tests"
-	go test $(REPOSITORY_PATH)/server/handler $(REPOSITORY_PATH)/server/storage/inmemory \
-			$(REPOSITORY_PATH)/util/collection $(REPOSITORY_PATH)/util/file \
-			$(REPOSITORY_PATH)/util/json $(REPOSITORY_PATH)/util/sync \
-			$(REPOSITORY_PATH)/util/regex -coverprofile coverage.out
+
+	go test NonRelDB/... -coverprofile coverage.out
 
 	go tool cover -html=coverage.out
+
 
 
 
