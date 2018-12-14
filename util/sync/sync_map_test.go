@@ -69,7 +69,7 @@ func TestDel__DeletedAndNotFound__Fail(t *testing.T){
 	syncMap := Map{}
 	syncMap.SetMap(&testMap)
 	syncMap.Del("1")
-	assert.Equal(t, "Value with this key not found", syncMap.Get("1"))
+	assert.Equal(t, "Value with this key not found", syncMap.Del("1"))
 }
 
 func TestKeys__FoundWildcard__Success(t *testing.T){
