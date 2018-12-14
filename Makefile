@@ -1,10 +1,7 @@
-REPOSITORY_PATH := $(HOME)/Dev/Go/src/NonRelDB
+CURRENT_DIR = $(shell pwd)
 
-VERSION := $(shell cat VERSION)
-
-.PHONY: fmt
 check:
-	go vet NonRelDB/...
+	go vet ./...
 
 	goimports **/*.go
 
@@ -14,12 +11,12 @@ clean:
 	rm server/server && rm client/client
 
 build-server:
-	go build -o server/server $(REPOSITORY_PATH)/server/server.go
+	go build -o server/server $(CURRENT_DIR)/server/server.go
 
 build-client:
-	go build -o client/client $(REPOSITORY_PATH)/client/client.go
+	go build -o client/client $(CURRENT_DIR)/client/client.go
 
-build-container:
+build:
 	sudo docker build -t "nonreldb" .
 
 run:
@@ -28,7 +25,7 @@ run:
 test: 
 	echo "Running unit & integration tests"
 
-	go test NonRelDB/... -coverprofile coverage.out
+	go test ./... -coverprofile coverage.out
 
 	go tool cover -html=coverage.out
 
