@@ -21,9 +21,9 @@ var (
 
 func init() {
 	DoubleQuoteReg = regexp.MustCompile("\"(.*)\"")
-	QueryReg = regexp.MustCompile("^(get|set|del|keys)")
-	TopicReg = regexp.MustCompile("^(subscribe|publish|unsubscribe)")
-	ExitReg = regexp.MustCompile("^exit$")
-	DumpReg = regexp.MustCompile("^dump$")
-	RestoreReg = regexp.MustCompile("^restore$")
+	QueryReg = regexp.MustCompile("^(get|GET|set|SET|del|DEL|keys|KEYS)")
+	TopicReg = regexp.MustCompile("^(subscribe|SUBSCRIBE|publish|PUBLISH|unsubscribe|UNSUBSCRIBE)")
+	ExitReg = regexp.MustCompile("^(exit|EXIT)$")
+	DumpReg = regexp.MustCompile("^(dump|DUMP)$")
+	RestoreReg = regexp.MustCompile("^(restore|DUMP)$")
 }
