@@ -49,13 +49,12 @@ run:
 
 test: 
 	echo "Running unit & integration tests"
-	go test $(REPOSITORY_PATH)/server/handler -coverprofile cover.out
-	go test $(REPOSITORY_PATH)/server/storage/inmemory -coverprofile cover.out
-	go test $(REPOSITORY_PATH)/util/collection -coverprofile cover.out
-	go test $(REPOSITORY_PATH)/util/file -coverprofile cover.out
-	go test $(REPOSITORY_PATH)/util/json -coverprofile cover.out
-	go test $(REPOSITORY_PATH)/util/regex -coverprofile cover.out
-	go test $(REPOSITORY_PATH)/util/sync -coverprofile cover.out
+	go test $(REPOSITORY_PATH)/server/handler $(REPOSITORY_PATH)/server/storage/inmemory \
+			$(REPOSITORY_PATH)/util/collection $(REPOSITORY_PATH)/util/file \
+			$(REPOSITORY_PATH)/util/json $(REPOSITORY_PATH)/util/sync \
+			$(REPOSITORY_PATH)/util/regex -coverprofile coverage.out
+
+	go tool cover -html=coverage.out
 
 
 
