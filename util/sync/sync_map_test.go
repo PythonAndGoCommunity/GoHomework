@@ -76,7 +76,9 @@ func TestKeys__FoundWildcard__Success(t *testing.T){
 	testMap := map[string]string{"1" : "one", "2" : "two", "3" : "three"}
 	syncMap := Map{}
 	syncMap.SetMap(&testMap)
-	assert.Equal(t, "1,2,3", syncMap.Keys("/*"))
+	querySet := syncMap.Keys("/*")
+	assert.True(t, "1,2,3" == querySet || "1,3,2" == querySet || "2,1,3" == querySet || "2,3,1" == querySet || "3,2,1" == querySet || "3,1,2" == querySet)
+
 }
 
 func TestKeys__IncorrectWildcard__Fail(t *testing.T){
