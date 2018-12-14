@@ -20,11 +20,11 @@ ADD . /go/src/NonRelDB/
 # Check stage.
 WORKDIR /go/src/NonRelDB
 
-RUN go vet ./...
+RUN go vet **/*.go
 
 RUN goimports **/*.go
 
-RUN golint ./...
+RUN golint **/*.go
 
 # Build stage.
 WORKDIR /go/src/NonRelDB/server
