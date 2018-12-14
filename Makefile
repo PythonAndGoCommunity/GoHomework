@@ -5,7 +5,7 @@ check:
 
 	goimports **/*.go
 
-	golint **/*.go
+	golint ./...
 
 clean:
 	rm server/server && rm client/client
