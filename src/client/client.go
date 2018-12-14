@@ -1,4 +1,3 @@
-//server
 package main
 
 import (

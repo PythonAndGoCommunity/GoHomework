@@ -1,4 +1,3 @@
-//serve
 package main
 
 import (
@@ -30,6 +29,7 @@ func main() {
 		if err != nil {
 			log.Fatalln(err)
 		}
+		log.Println("Connection from", conn.RemoteAddr())
 		go handleConnection(conn)
 	}
 }
@@ -39,7 +39,6 @@ func handleConnection(conn net.Conn) {
 	dataBase := make(map[string]string)
 	clientReader := bufio.NewReader(conn)
 	clientWriter := bufio.NewWriter(conn)
-	log.Println("Connection from", conn.RemoteAddr())
 	for {
 		command, err := clientReader.ReadString('\n')
 		if err != nil {
