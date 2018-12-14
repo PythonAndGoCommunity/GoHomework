@@ -1,13 +1,13 @@
 package main
 
 import (
-	"os"
-	"fmt"
-	"bufio"
-	"net"
-	"flag"
-	"NonRelDB/log"
 	"NonRelDB/client/handler"
+	"NonRelDB/log"
+	"bufio"
+	"flag"
+	"fmt"
+	"net"
+	"os"
 )
 
 var host string
@@ -16,7 +16,7 @@ var dump bool
 var restore bool
 var location string
 
-func init(){
+func init() {
 	flag.StringVar(&host, "host", "127.0.0.1", "Defines host ip")
 	flag.StringVar(&host, "h", "127.0.0.1", "Defines host ip")
 	flag.StringVar(&port, "port", "9090", "Defines host port")
@@ -27,8 +27,8 @@ func init(){
 }
 
 // main entry point for client.
-func main(){
-	c, err := net.Dial("tcp", host + ":" + port)
+func main() {
+	c, err := net.Dial("tcp", host+":"+port)
 	defer c.Close()
 
 	if err != nil {

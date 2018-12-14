@@ -81,4 +81,3 @@ func TestRestoreReg__Restore__Success(t *testing.T) {
 func TestRestoreReg__RestoreWithSpaces__Fail(t *testing.T) {
 	assert.False(t, RestoreReg.MatchString(" restore "))
 }
-

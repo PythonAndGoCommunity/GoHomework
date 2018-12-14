@@ -1,8 +1,8 @@
 package main
 
 import (
-	"NonRelDB/server/handler"
 	"NonRelDB/log"
+	"NonRelDB/server/handler"
 	"NonRelDB/server/storage/inmemory"
 	"flag"
 	"net"
@@ -43,7 +43,7 @@ func cleanup() {
 	go func() {
 		<-sign
 		log.Info.Println("Ctrl+C pressed in Terminal")
-		if (mode == "disk"){
+		if mode == "disk" {
 			inmemory.SaveDBToStorage(location)
 		}
 		os.Exit(0)
@@ -56,7 +56,7 @@ func main() {
 	cleanup()
 
 	l, err := net.Listen("tcp", ip+":"+port)
-	
+
 	if err != nil {
 		log.Error.Panicln(err.Error())
 	}

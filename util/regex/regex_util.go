@@ -19,7 +19,7 @@ var (
 	RestoreReg *regexp.Regexp
 )
 
-func init(){ 
+func init() {
 	DoubleQuoteReg = regexp.MustCompile("\"(.*)\"")
 	QueryReg = regexp.MustCompile("^(get|set|del|keys)")
 	TopicReg = regexp.MustCompile("^(subscribe|publish|unsubscribe)")

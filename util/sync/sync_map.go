@@ -1,13 +1,13 @@
 package sync
 
 import (
-	"sync"
+	"NonRelDB/log"
 	"regexp"
 	"strings"
-	"NonRelDB/log"
+	"sync"
 )
 
-// Map map synchronized with mutex. 
+// Map map synchronized with mutex.
 type Map struct {
 	sync.Mutex
 	storage *map[string]string
@@ -19,7 +19,7 @@ func (syncMap *Map) GetMap() *map[string]string {
 }
 
 // SetMap setter for map.
-func (syncMap *Map) SetMap(storage *map[string]string){
+func (syncMap *Map) SetMap(storage *map[string]string) {
 	syncMap.storage = storage
 }
 
@@ -28,14 +28,14 @@ func (syncMap *Map) Get(key string) string {
 	syncMap.Lock()
 	defer syncMap.Unlock()
 	v := (*syncMap.storage)[key]
-	if v != ""{
-		return v;
+	if v != "" {
+		return v
 	}
 	return "Value with this key not found"
 }
 
 // Set set value according to key.
-func (syncMap *Map) Set(key string, value string) string{
+func (syncMap *Map) Set(key string, value string) string {
 	syncMap.Lock()
 	defer syncMap.Unlock()
 	(*syncMap.storage)[key] = value
@@ -43,13 +43,13 @@ func (syncMap *Map) Set(key string, value string) string{
 }
 
 // Del del value according to key.
-func (syncMap *Map) Del(key string) string{
+func (syncMap *Map) Del(key string) string {
 	syncMap.Lock()
 	defer syncMap.Unlock()
 	v := (*syncMap.storage)[key]
 	if v != "" {
-		delete((*syncMap.storage),key)
-		return v;
+		delete((*syncMap.storage), key)
+		return v
 	}
 	return "Value with this key not found"
 }
@@ -68,14 +68,14 @@ func (syncMap *Map) Keys(pattern string) string {
 		return "Pattern is incorrect"
 	}
 
-	for key := range (*syncMap.storage) {
+	for key := range *syncMap.storage {
 		if regex.MatchString(key) {
 			keys = append(keys, key)
 		}
 	}
 
 	if keys != nil {
-		return strings.Join(keys,",")
+		return strings.Join(keys, ",")
 	}
 	return "Keys with this pattern not found"
 }

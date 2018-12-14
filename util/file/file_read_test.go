@@ -3,10 +3,11 @@ package file
 import (
 	"os"
 	"testing"
+
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOpenAndReadString__SameString__Success(t *testing.T){
+func TestOpenAndReadString__SameString__Success(t *testing.T) {
 	file, _ := os.Create("test.txt")
 
 	file.WriteString("123")
@@ -18,7 +19,7 @@ func TestOpenAndReadString__SameString__Success(t *testing.T){
 	os.Remove("test.txt")
 }
 
-func TestOpenAndReadString__OtherString__Fail(t *testing.T){
+func TestOpenAndReadString__OtherString__Fail(t *testing.T) {
 	file, _ := os.Create("test.txt")
 
 	file.WriteString("123")
@@ -30,13 +31,13 @@ func TestOpenAndReadString__OtherString__Fail(t *testing.T){
 	os.Remove("test.txt")
 }
 
-func TestOpenAndReadString__FileNotExist__Fail(t *testing.T){
-	assert.Panics(t,func(){
+func TestOpenAndReadString__FileNotExist__Fail(t *testing.T) {
+	assert.Panics(t, func() {
 		OpenAndReadString("test.txt")
 	})
 }
 
-func TestOpenAndRead__SameByteArray__Success(t *testing.T){
+func TestOpenAndRead__SameByteArray__Success(t *testing.T) {
 	file, _ := os.Create("test.bin")
 
 	file.Write([]byte("123"))
@@ -48,7 +49,7 @@ func TestOpenAndRead__SameByteArray__Success(t *testing.T){
 	os.Remove("test.bin")
 }
 
-func TestOpenAndRead__DifferentByteArray__Success(t *testing.T){
+func TestOpenAndRead__DifferentByteArray__Success(t *testing.T) {
 	file, _ := os.Create("test.bin")
 
 	file.Write([]byte("123"))
@@ -60,8 +61,8 @@ func TestOpenAndRead__DifferentByteArray__Success(t *testing.T){
 	os.Remove("test.bin")
 }
 
-func TestOpenAndRead__FileNotExist__Fail(t *testing.T){
-	assert.Panics(t,func(){
+func TestOpenAndRead__FileNotExist__Fail(t *testing.T) {
+	assert.Panics(t, func() {
 		OpenAndRead("test.bin")
 	})
 }
