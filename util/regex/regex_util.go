@@ -25,5 +25,5 @@ func init() {
 	TopicReg = regexp.MustCompile("^(subscribe|SUBSCRIBE|publish|PUBLISH|unsubscribe|UNSUBSCRIBE)")
 	ExitReg = regexp.MustCompile("^(exit|EXIT)$")
 	DumpReg = regexp.MustCompile("^(dump|DUMP)$")
-	RestoreReg = regexp.MustCompile("^(restore|DUMP)$")
+	RestoreReg = regexp.MustCompile("^(restore|RESTORE)$")
 }
