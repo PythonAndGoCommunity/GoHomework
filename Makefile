@@ -11,8 +11,8 @@ make_container:
 	sudo docker build -t goredis-app .
 	sudo docker rmi $$(sudo docker images -f "dangling=true" -q)
 	sudo docker run -d --rm -i --name goredis-app-running goredis-app
-	sudo docker exec -it goredis-app-running /bin/bash
-	sudo docker stop goredis-app-running
+	# sudo docker exec -it goredis-app-running /bin/bash
+	# sudo docker stop goredis-app-running
 
 check:
 	go vet $(PROJECT_DIR_NAME)/server
