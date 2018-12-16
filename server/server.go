@@ -23,8 +23,8 @@ func init() {
 	flag.StringVar(&port, "p", "9090", "Defines host port")
 	flag.StringVar(&mode, "mode", "memory", "Defines storage location")
 	flag.StringVar(&mode, "m", "memory", "Defines storage location")
-	flag.StringVar(&location, "location", "storage.json", "Defines storage location")
-	flag.StringVar(&location, "l", "storage.json", "Defines storage location")
+	flag.StringVar(&location, "location", "storage.json", "Defines storage location on disk")
+	flag.StringVar(&location, "l", "storage.json", "Defines storage location on disk")
 	flag.Parse()
 }
 
