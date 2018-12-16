@@ -1,11 +1,11 @@
 CURRENT_DIR = $(shell pwd)
 
 check:
-	go vet **/*.go
+	go vet ./...
 
-	goimports **/*.go
+	goimports ./
 
-	golint **/*.go
+	golint ./...
 
 clean:
 	rm server/server && rm client/client
