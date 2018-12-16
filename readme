@@ -1,0 +1,22 @@
+use makefile for all actions
+
+make build:
+    compiling server & client binaries use latest golang docker images, before do that, runs clean command
+
+make run:
+    runs docker container using earlier built image. Before, if image not exist, build command run automatically
+    ./server/common_files directory contains storage file. optional may contain cover.out file after tests run
+    ./server/log directory contains server log file
+
+make check:
+    runs golint, go fmt and go vet for verify code
+
+make test:
+    runs tests if package contains it. cover.out file put into common_files dir
+
+make stop:
+    force delete docker container if exist it
+
+make clean:
+    runs for full cleaning project. Delete docker container, docker image, binaries and created directories and
+    all created files

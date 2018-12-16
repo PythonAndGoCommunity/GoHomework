@@ -44,9 +44,9 @@ func TestStoreMethods(t *testing.T) {
 		t.Error("\t[ERR]\tShould Error wrong value return")
 	}
 
-	ch2_ := make(chan string, 1)
-	go newStorage.GET("bird", ch2_)
-	if <-ch2_ == "bird:Twit" {
+	ch2s := make(chan string, 1)
+	go newStorage.GET("bird", ch2s)
+	if <-ch2s == "bird:Twit" {
 		t.Log("\t[OK]\tStore no contain key dog")
 	} else {
 		t.Error("\t[ERR]\tShould Error wrong value return")

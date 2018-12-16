@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"net"
 	"os"
@@ -9,7 +10,17 @@ import (
 
 func main() {
 
-	conn, err := net.Dial("tcp", "127.0.0.1:9090")
+	var port string
+	flag.StringVar(&port, "port", "9090", "listening port")
+	flag.StringVar(&port, "p", "9090", "listening port")
+	var host string
+	flag.StringVar(&host, "h", "127.0.0.1", "listening IP")
+	flag.StringVar(&host, "host", "127.0.0.1", "listening IP")
+
+	flag.Parse()
+
+	address := fmt.Sprintf("%v:%v", host, port)
+	conn, err := net.Dial("tcp", address)
 	if err != nil {
 		fmt.Println(err)
 		return

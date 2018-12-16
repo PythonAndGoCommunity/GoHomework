@@ -36,11 +36,9 @@ func (object storage) SET(key string, value string, response chan string) {
 		if inFileValue != "false" {
 			object.storageMap[key] = inFileValue
 			response <- "pair with key " + key + "exist. " + key + ": " + inFileValue //send data to client
-			return
 		} else {
 			object.storageMap[key] = value
 			response <- "pair " + key + ":" + value + " created" //send data to client
-			return
 		}
 	}
 }
@@ -129,15 +127,12 @@ func (object storage) deleteFromFile(key string) bool {
 	if deleteBool {
 		object.storageFile.Seek(0, 0)
 		ioutil.WriteFile(string(object.storageFile.Name()), []byte(stringResult), 0755)
-		return deleteBool
-	} else {
-		return deleteBool
 	}
+	return deleteBool
 
 }
 
 func (object storage) writeToFileAllData() {
-	//object.storageFile.Seek(0,0)
 	allDataInFile := object.readFromFileAllData()
 	var resultString string
 	resultMap := object.storageMap
@@ -151,7 +146,6 @@ func (object storage) writeToFileAllData() {
 		resultString += fmt.Sprintf("%v;%v\n", key, value)
 	}
 	ioutil.WriteFile(string(object.storageFile.Name()), []byte(resultString), 0755)
-	//object.storageFile.Sync()
 }
 
 type storage struct {
@@ -165,8 +159,8 @@ func main() {
 	flag.StringVar(&port, "port", "9090", "listening port")
 	flag.StringVar(&port, "p", "9090", "listening port")
 	var host string
-	flag.StringVar(&host, "h", "127.0.0.1", "listening IP")
-	flag.StringVar(&host, "host", "127.0.0.1", "listening IP")
+	flag.StringVar(&host, "h", "0.0.0.0", "listening IP")
+	flag.StringVar(&host, "host", "0.0.0.0", "listening IP")
 	var mode string
 	flag.StringVar(&mode, "m", "disk", "storage mode disk(default) or memory")
 	flag.StringVar(&mode, "mode", "disk", "storage mode disk(default) or memory")
@@ -174,7 +168,9 @@ func main() {
 	flag.Parse()
 	fmt.Println(port, host)
 
-	logFile, _ := os.OpenFile("server.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0755)
+	pwd, _ := os.Getwd()
+	fmt.Println(pwd)
+	logFile, _ := os.OpenFile(pwd+"/log/server.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0755)
 	logWriter := log.New(logFile, "", log.Ldate|log.Ltime)
 
 	listener, err := net.Listen("tcp", host+":"+port)
@@ -227,7 +223,8 @@ func handleConnection(conn net.Conn, request chan string, response chan string, 
 }
 
 func goStorage(request chan string, response chan string, mode string) {
-	file, _ := os.OpenFile("storage", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0775)
+	pwd, _ := os.Getwd()
+	file, _ := os.OpenFile(pwd+"/common_files/storage", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0775)
 	defer file.Close()
 	newStorage := storage{
 		make(map[string]string),
@@ -275,7 +272,7 @@ func goStorage(request chan string, response chan string, mode string) {
 		default:
 			response <- "Wrong expression:(" //send data to client
 		}
-		requestsCount += 1
+		requestsCount++
 		if requestsCount >= 3 {
 			requestsCount = 0
 			newStorage.WRITE()
