@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+
 func main() {
 	var portFlag string
 	flag.StringVar(&portFlag, "port", "9090", "Server port. Defalt: 9090")
@@ -29,13 +30,13 @@ func main() {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		log.Println("Connection from", conn.RemoteAddr())
 		go handleConnection(conn)
 	}
 }
 
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
+	log.Println("Connection from", conn.RemoteAddr())
 	dataBase := make(map[string]string)
 	clientReader := bufio.NewReader(conn)
 	clientWriter := bufio.NewWriter(conn)

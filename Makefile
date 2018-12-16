@@ -10,8 +10,7 @@ build: clean client server docker
 
 .PHONY: test
 test:
-	go test $(SERVER_PATH)
-	go test $(CLIENT_PATH)
+	go test -coverprofile=coverage.out $(SERVER_PATH) $(CLIENT_PATH)
 
 .PHONY: check
 check: 
@@ -21,8 +20,9 @@ check:
 	go vet $(CLIENT_PATH)
 
 .PHONY: run
-run: build
+run: buid
 	sudo docker run -d gohomework
+	#docker exec -i $(docker ps -qf ancestor=gohomework --last=1) /usr/local/bin/client
 
 clean:
 	rm -rf $(SERVER_PATH)/$(SERVER_BIN)
@@ -36,4 +36,4 @@ server:
 
 .PHONY: docker
 docker: server client 
-	sudo docker build -t gohomework .
+	sudo docker build -t "gohomework" .

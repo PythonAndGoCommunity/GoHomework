@@ -16,7 +16,6 @@ func main() {
         flag.StringVar(&hostFlag, "host", "127.0.0.1", "Server host. Defalt: 127.0.0.1")
         flag.StringVar(&hostFlag, "h", "127.0.0.1", "Server host. Defalt: 127.0.0.1")
         flag.Parse()
-        fmt.Println(portFlag)
         conn, err := net.Dial("tcp", hostFlag+":"+portFlag)
         if err != nil {
                 fmt.Println(err)
