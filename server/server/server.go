@@ -14,7 +14,7 @@ const DataFile = "server/server/data/data.json"
 
 var Channels = make(map[net.Conn][]string)
 var Data DataType
-var Verbose, Storage bool
+var Verbose bool
 var ExitChannel = make(chan bool)
 
 func ConfigureLogging() {

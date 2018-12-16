@@ -46,9 +46,9 @@ func main() {
 
 func setStorage(storage string) {
 	if strings.Compare(storage, "memory") == 0 {
-		server.Storage = false
+		server.MemoryMode = true
 	} else {
-		server.Storage = true
+		server.MemoryMode = false
 	}
 }
 

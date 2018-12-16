@@ -10,6 +10,7 @@ import (
 )
 
 type DataType map[string]string
+var MemoryMode bool
 
 func LoadFromFile(filename string) ([]byte, error) {
 	data, err := ioutil.ReadFile(filename)
@@ -30,10 +31,12 @@ func LoadData(filename string) error {
 }
 
 func SaveData(filename string) {
-	dumped := dumpData(Data)
-	err := ioutil.WriteFile(filename, dumped, 0644)
-	if err != nil {
-		fmt.Println("ERROR: cannot save data to filename")
+	if !MemoryMode {
+		dumped := dumpData(Data)
+		err := ioutil.WriteFile(filename, dumped, 0644)
+		if err != nil {
+			fmt.Println("ERROR: cannot save data to filename")
+		}
 	}
 }
 
