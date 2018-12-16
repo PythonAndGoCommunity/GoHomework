@@ -1,6 +1,6 @@
 ## NonRelDB
   
-NonRelDB is an in-memory database that persists on disk. The data model is key-value. Written on golang.
+NonRelDB is an in-memory database that persists on disk. The data model is key-value. Written on pure golang.
 
 ## Installation
 First of all you need to install [git](https://git-scm.com/) and [docker](https://www.docker.com/)
@@ -14,7 +14,7 @@ In cloned repository you will find **Makefile** with following targets:
  - **build-client** - builds client's executable binary file.
  - **build** - builds docker container with server's & client's binaries. Also includes go vet, goimports and golint. Entrypoint is server with default configuration.
  - **check** - runs subsequently go vet, goimports and golint on the project. Fails if any error occurs.
- - **test** - runs unit & integration tests. Fail if any test don't pass.
+ - **test** - runs unit & integration tests. Fails if any test don't pass.
  - **run** - runs built docker container.
 ## Usage
 ### Server's flags
