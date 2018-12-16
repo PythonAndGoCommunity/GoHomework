@@ -13,8 +13,6 @@ RUN go get -u golang.org/x/lint/golint
 
 RUN go get github.com/stretchr/testify
 
-RUN mkdir /NonRelDB/
-
 ADD . /go/src/NonRelDB/
 
 # Check stage.
