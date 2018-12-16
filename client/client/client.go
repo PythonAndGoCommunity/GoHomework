@@ -37,7 +37,7 @@ func HandleUserRequests(conn net.Conn, done chan string) {
 			b, _ := reader.ReadByte()
 
 			if strings.Compare(string(b), "\t") == 0 {
-				// commandEnd := completeCommand(buff.String())
+				// commandEnd := CompleteCommand(buff.String())
 				// fmt.Fprintln(os.Stdout, commandEnd)
 			}
 
@@ -69,7 +69,7 @@ func SendRequest(conn net.Conn, text string) {
 	}
 }
 
-func completeCommand(commandPart string) string {
+func CompleteCommand(commandPart string) string {
 	commands := [4]string{"SET", "GET", "PUBLISH", "SUBSCRIBE"}
 
 	for i := range commands {

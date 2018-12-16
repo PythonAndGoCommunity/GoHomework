@@ -1,9 +1,5 @@
 package test
 
-// go test server_test.go
-// go test -coverprofile cover.out
-// go tool cover -html cover.out
-
 import (
 	"GoHomework/server/server"
 	"strings"
