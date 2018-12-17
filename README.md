@@ -75,7 +75,7 @@ Example
     SUBSCRIBE redis
 
 - **UNSUBSCRIBE** - unsubscribes the client from specified channel.  
-**Cannot use from client because after subscribe client turns into listening state.*
+**Cannot use from client because after subscribe client turns into listening state.*  
 Example
 
     USUBSCRIBE redis
