@@ -12,7 +12,7 @@ REPOSITORY_PATH := github.com/SiarheiKresik
 DEV_GOPATH := /go
 DEV_GOPATH_BIN := $(DEV_GOPATH)/bin
 DEV_GOPATH_SRC := $(DEV_GOPATH)/src
-DEV_WORKDIR := $(DEV_GOPATH_SRC)$(REPOSITORY_PATH)/$(APP_BASE_NAME)
+DEV_WORKDIR := $(DEV_GOPATH_SRC)/$(REPOSITORY_PATH)/$(APP_BASE_NAME)
 
 
 SRC_MOUNT := "$(PWD):$(DEV_GOPATH_SRC)/$(REPOSITORY_PATH)/$(APP_BASE_NAME)"
@@ -22,9 +22,10 @@ DEV_IMAGE := $(APP_BASE_NAME)-${DEV}
 PROD_IMAGE := $(APP_BASE_NAME)
 
 BUILDER := docker run --rm 
-BUILDER += -v $(SRC_MOUNT) -v $(BIN_MOUNT)
-BUILDER += -w $(DEV_WORKDIR) $(DEV_IMAGE)
+BUILDER += -v $(SRC_MOUNT)
+BUILDER += -w $(DEV_WORKDIR)
 
+#  -v $(BIN_MOUNT)
 IMAGE_BUILDER := docker build
 RUNNER := docker run --rm -it
 
@@ -39,7 +40,7 @@ endef
 
 ### targets ###
 
-build: build-dev-image build-dev build-prod-image clean
+build: build-dev-image build-dev build-prod-image
 
 build-dev-image:
 	$(call print_target_name, "Building an image with go tools for development...")
@@ -47,7 +48,7 @@ build-dev-image:
 
 build-dev:
 	$(call print_target_name, "Compile binaries...")
-	$(BUILDER) sh -c "go install -v ./..."
+	$(BUILDER) -v $(BIN_MOUNT) $(DEV_IMAGE) sh -c "go install ./..."
 
 build-prod-image:
 	$(call print_target_name, "Building an image with server and client binaries")
@@ -57,19 +58,11 @@ test:
 	$(call print_target_name, "Run tests...")
 	@echo "test are not implemented yet"
 
-check:
-	$(BUILDER) sh -xc '\
-		test -z "`$(SEARCH_GOFILES) -exec gofmt -s -l {} \;`" \
-		&& test -z "`$(SEARCH_GOFILES) -exec golint {} \;`"'
-
-che1ck:
-	@echo "check"
-	docker run \
-	--rm \
-	-v $(SRC_MOUNT) \
-	$(DEV_IMAGE) \
-	/bin/sh -c \
-	"go vet src/*.go && goimports -w src/*.go && golint src/*.go"
+check: build-dev-image
+	$(BUILDER) $(DEV_IMAGE) sh -xc "\
+		go version && \
+		$(SEARCH_GOFILES) -exec gofmt -s -l {} \; && \
+		$(SEARCH_GOFILES) -exec golint {} \;"
 
 run: run-server
 
@@ -79,10 +72,7 @@ run-server:
 
 run-client:
 	$(call print_target_name, "Run client...")
-	$(RUNNER) --entrypoint /bin/client $(APP_BASE_NAME):latest $(ARGS)
-
-clean:
-	$(call print_target_name, "Cleaning up...")
+	$(RUNNER) --entrypoint /app/client $(APP_BASE_NAME):latest $(ARGS)
 
 prune:
 	docker image prune
