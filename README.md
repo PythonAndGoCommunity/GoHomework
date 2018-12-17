@@ -13,7 +13,7 @@ In cloned repository you will find **Makefile** with following targets:
  - **build-server** - builds server's executable binary file.
  - **build-client** - builds client's executable binary file.
  - **clean-binaries** - removes server's & client's binaries on local machine.
- - **build** - builds docker container with server's & client's binaries. Also includes go vet, goimports and golint. Entrypoint is server with default configuration.
+ - **build** - copies server's & client's & dependencies src, adds go vet, goimports and golint. Runs checks and if no errors were occured, builds server's & client's binaries. Entrypoint is server with default configuration.
  - **clean** - cleans docker's unused containers, networks, volumes and dangling images.
  - **check** - runs subsequently go vet, goimports and golint on the project. Fails if any error occurs.
  - **test** - runs unit & integration tests. Fails if any test don't pass.
