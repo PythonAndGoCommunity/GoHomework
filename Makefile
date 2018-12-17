@@ -7,7 +7,7 @@ check:
 
 	golint ./...
 
-clean:
+clean-binaries:
 	rm server/server && rm client/client
 
 build-server:
@@ -16,11 +16,14 @@ build-server:
 build-client:
 	go build -o client/client $(CURRENT_DIR)/client/client.go
 
-build:
+clean:
+	sudo docker system prune
+
+build: clean
 	sudo docker build -t "nonreldb" .
 
-run:
-	sudo docker run --net=host nonreldb
+run: clean
+	sudo docker run -d --net=host nonreldb
 
 test: 
 	echo "Running unit & integration tests"
@@ -28,7 +31,6 @@ test:
 	go test ./... -coverprofile coverage.out
 
 	go tool cover -html=coverage.out
-
 
 
 
