@@ -23,6 +23,7 @@ PROD_IMAGE := $(APP_BASE_NAME)
 
 BUILDER := docker build
 RUNNER := docker run --rm
+CHECKER := $(RUNNER) -v $(SRC_MOUNT) -w $(DEV_WORKDIR) $(DEV_IMAGE)
 
 SEARCH_GOFILES = find -not -path '*/vendor/*' -type f -name "*.go"
 
@@ -53,11 +54,19 @@ test:
 	$(call print_target_name, "Run tests...")
 	@echo "test are not implemented yet"
 
-check: build-dev-image
-	$(RUNNER) -v $(SRC_MOUNT) -w $(DEV_WORKDIR) $(DEV_IMAGE) sh -xc "\
-		go version && \
-		$(SEARCH_GOFILES) -exec gofmt -s -l {} \; && \
-		$(SEARCH_GOFILES) -exec golint {} \;"
+check: build-dev-image check-govet check-goimports check-golint
+
+check-govet:
+	$(call print_target_name, "Checks (go vet)...")
+	$(CHECKER) sh -c "go tool vet -v ."
+
+check-goimports:
+	$(call print_target_name, "Checks (goimports)...")
+	$(CHECKER) sh -c "$(SEARCH_GOFILES) -exec goimports {} \;"
+
+check-golint:
+	$(call print_target_name, "Checks (golint)...")
+	$(CHECKER) sh -c "$(SEARCH_GOFILES) -exec golint {} \;"
 
 run: run-server
 
