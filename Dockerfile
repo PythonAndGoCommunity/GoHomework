@@ -6,7 +6,8 @@ RUN go get golang.org/x/lint/golint
 RUN go get golang.org/x/tools/cmd/goimports
 
 FROM alpine AS prod
-COPY ./bin/client /bin/
-COPY ./bin/server /bin/
+WORKDIR /app/
+COPY ./bin/client .
+COPY ./bin/server .
 EXPOSE 9090
-ENTRYPOINT ["/bin/server"]
+ENTRYPOINT ["/app/server"]
