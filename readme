@@ -20,3 +20,26 @@ make stop:
 make clean:
     runs for full cleaning project. Delete docker container, docker image, binaries and created directories and
     all created files
+
+
+Work with application
+
+Server
+You may run server using flags:
+    -p --port listening port, default is 9090;
+    -h --host ip address, default is 0.0.0.0 (listening all ip);
+    -m --mode storage mode, default is "memory", alternate mode is "disk" (save storage to disk)
+
+
+Client
+You may run client using flags:
+    -p --port connect to port, default is 9090;
+    -h --host connect to ip address, default is 127.0.0.1
+
+Commands:
+    set key value
+    get key
+    del key
+    keys [searching key]
+
+

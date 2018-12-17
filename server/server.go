@@ -162,8 +162,11 @@ func main() {
 	flag.StringVar(&host, "h", "0.0.0.0", "listening IP")
 	flag.StringVar(&host, "host", "0.0.0.0", "listening IP")
 	var mode string
-	flag.StringVar(&mode, "m", "disk", "storage mode disk(default) or memory")
-	flag.StringVar(&mode, "mode", "disk", "storage mode disk(default) or memory")
+	flag.StringVar(&mode, "m", "memory", "storage mode disk(default) or memory")
+	flag.StringVar(&mode, "mode", "memory", "storage mode disk(default) or memory")
+	if mode != "disk" {
+		mode = "memory"
+	}
 
 	flag.Parse()
 	fmt.Println(port, host)
