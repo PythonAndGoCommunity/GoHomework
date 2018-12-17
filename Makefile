@@ -21,13 +21,8 @@ BIN_MOUNT := "$(PWD)/bin:$(DEV_GOPATH_BIN)"
 DEV_IMAGE := $(APP_BASE_NAME)-${DEV}
 PROD_IMAGE := $(APP_BASE_NAME)
 
-BUILDER := docker run --rm 
-BUILDER += -v $(SRC_MOUNT)
-BUILDER += -w $(DEV_WORKDIR)
-
-#  -v $(BIN_MOUNT)
-IMAGE_BUILDER := docker build
-RUNNER := docker run --rm -it
+BUILDER := docker build
+RUNNER := docker run --rm
 
 SEARCH_GOFILES = find -not -path '*/vendor/*' -type f -name "*.go"
 
@@ -44,22 +39,22 @@ build: build-dev-image build-dev build-prod-image
 
 build-dev-image:
 	$(call print_target_name, "Building an image with go tools for development...")
-	$(IMAGE_BUILDER) -t $(DEV_IMAGE) --target $(DEV) .
+	$(BUILDER) -t $(DEV_IMAGE) --target $(DEV) .
 
 build-dev:
 	$(call print_target_name, "Compile binaries...")
-	$(BUILDER) -v $(BIN_MOUNT) $(DEV_IMAGE) sh -c "go install ./..."
+	$(RUNNER) -v $(BIN_MOUNT) -v $(SRC_MOUNT) -w $(DEV_WORKDIR) $(DEV_IMAGE) sh -c "go install ./..."
 
 build-prod-image:
 	$(call print_target_name, "Building an image with server and client binaries")
-	$(IMAGE_BUILDER) -t $(PROD_IMAGE) --target $(PROD) .
+	$(BUILDER) -t $(PROD_IMAGE) --target $(PROD) .
 
 test:
 	$(call print_target_name, "Run tests...")
 	@echo "test are not implemented yet"
 
 check: build-dev-image
-	$(BUILDER) $(DEV_IMAGE) sh -xc "\
+	$(RUNNER) -v $(SRC_MOUNT) -w $(DEV_WORKDIR) $(DEV_IMAGE) sh -xc "\
 		go version && \
 		$(SEARCH_GOFILES) -exec gofmt -s -l {} \; && \
 		$(SEARCH_GOFILES) -exec golint {} \;"
@@ -72,7 +67,7 @@ run-server:
 
 run-client:
 	$(call print_target_name, "Run client...")
-	$(RUNNER) --entrypoint /app/client $(APP_BASE_NAME):latest $(ARGS)
+	$(RUNNER) -it --entrypoint /app/client $(APP_BASE_NAME):latest $(ARGS)
 
 prune:
 	docker image prune
