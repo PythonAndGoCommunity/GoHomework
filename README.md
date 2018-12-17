@@ -78,7 +78,7 @@ Example
 **Cannot use from client because after subscribe client turns into listening state.*  
 Example
 
-    USUBSCRIBE redis
+    UNSUBSCRIBE redis
 
 - **PUBLISH** - sends the message to specified channel.  
 *\*Message must be in double quotes.*   
