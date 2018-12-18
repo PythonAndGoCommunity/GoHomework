@@ -2,56 +2,75 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	"flag"
 	"log"
 	"net"
-	"os"
 	"strconv"
-
-	_ "github.com/SiarheiKresik/go-kvdb/common"
 )
 
+const protocol = "tcp"
+
 func main() {
+	flag.Parse()
 
-	const protocol = "tcp"
-
-	addr := net.JoinHostPort(config.host, strconv.Itoa(config.port))
-	// TODO check if host and port are valid
-
-	log.Println("Connecting to server ", addr, "...")
-
-	conn, err := net.Dial(protocol, addr)
-	if err != nil {
-		log.Fatalln(err)
+	// check if host is valid
+	// TODO move checking in config?
+	host := net.ParseIP(config.host)
+	if host == nil {
+		log.Fatalln("invalid ip adress:", config.host)
 	}
-	defer conn.Close()
 
-	remoteAddr := conn.RemoteAddr()
-	reader := bufio.NewReader(os.Stdin)
+	// network address
+	addr := net.JoinHostPort(config.host, strconv.Itoa(config.port))
+
+	// create a client and connect
+	client := NewClient()
+
+	// connect to a server
+	log.Printf("Connecting to server %s...\n", addr)
+
+	remoteAddr, err := client.Connect(addr)
+	if err != nil {
+		log.Fatalf("Error connecting to %s.", addr)
+	}
+
+	defer func() {
+		log.Println("Closing connection...")
+		client.Close()
+	}()
+
+	log.Println("Connected")
+
+	// create cli
+	cli := NewCli()
 
 	for {
-		// command line prompt
-		fmt.Print("server: ", remoteAddr, " > ")
+		cli.Prompt(remoteAddr.String())
 
-		// read in input from stdin
-		text, err := reader.ReadString('\n')
+		// read user input
+		text, err := cli.Read()
 		if err != nil {
 			log.Fatalln("text error:", err)
 		}
 
+		if text == "exit\n" {
+			break
+		}
+
 		// send to socket
-		_, prnterr := fmt.Fprintf(conn, text)
-		if prnterr != nil {
-			log.Fatalln(prnterr)
+		err = client.Send(text)
+		if err != nil {
+			log.Print("error sending message:", err)
+			continue
 		}
 
 		// listen for reply
-		message, readerr := bufio.NewReader(conn).ReadString('\n')
+		message, readerr := bufio.NewReader(client.conn).ReadString('\n')
 		if readerr != nil {
 			log.Fatalln(readerr)
 			break
 		}
-		fmt.Print(message)
 
+		cli.Write(message)
 	}
 }

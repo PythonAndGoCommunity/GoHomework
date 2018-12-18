@@ -4,6 +4,7 @@ import (
 	"flag"
 )
 
+// Config represents a set of parsed flags for client settings.
 type Config struct {
 	port    int
 	host    string
@@ -41,6 +42,4 @@ func init() {
 
 	flag.BoolVar(&config.restore, "restore", defaultRestore, restoreDesc)
 	flag.BoolVar(&config.restore, "r", defaultRestore, restoreDesc+shorhand)
-
-	flag.Parse()
 }
