@@ -57,7 +57,7 @@ test-ut:
 	@$(CHECKER) sh -c 'CGO_ENABLED="0" go test ./...'
 	
 
-check: build-dev-image check-goimports check-govet check-golint
+check: build-dev-image check-goimports check-golint check-govet
 
 check-govet:
 	$(call print_target_name, "Checks (go vet)...")
