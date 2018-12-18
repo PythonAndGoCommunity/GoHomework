@@ -50,9 +50,12 @@ build-prod-image:
 	$(call print_target_name, "Building an image with server and client binaries")
 	$(BUILDER) -t $(PROD_IMAGE) --target $(PROD) .
 
-test:
-	$(call print_target_name, "Run tests...")
-	@echo "test are not implemented yet"
+test: test-ut
+
+test-ut:
+	$(call print_target_name, "Run unit tests...")
+	@$(CHECKER) sh -c 'CGO_ENABLED="0" go test ./...'
+	
 
 check: build-dev-image check-goimports check-govet check-golint
 
