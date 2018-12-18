@@ -83,7 +83,7 @@ run-client:
 	$(RUNNER) -it --entrypoint /app/client $(APP_BASE_NAME):latest $(ARGS)
 
 run-dev:
-	$(RUNNER) -it -v $(SRC_MOUNT) -w $(DEV_WORKDIR) golang:1.11.1-alpine sh
+	$(RUNNER) -it -v $(SRC_MOUNT) -w $(DEV_WORKDIR) $(DEV_IMAGE) sh
 
 prune:
 	docker image prune
