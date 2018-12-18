@@ -2,6 +2,10 @@
 
 DEV := dev
 PROD := prod
+TAG := latest
+
+BIN := bin
+SRC := src
 
 APP_BASE_NAME := go-kvdb
 APP_CLIENT_NAME := client
@@ -10,12 +14,12 @@ APP_SERVER_NAME := server
 REPOSITORY_PATH := github.com/SiarheiKresik
 
 DEV_GOPATH := /go
-DEV_GOPATH_BIN := $(DEV_GOPATH)/bin
-DEV_GOPATH_SRC := $(DEV_GOPATH)/src
+DEV_GOPATH_BIN := $(DEV_GOPATH)/$(BIN)
+DEV_GOPATH_SRC := $(DEV_GOPATH)/$(SRC)
 DEV_WORKDIR := $(DEV_GOPATH_SRC)/$(REPOSITORY_PATH)/$(APP_BASE_NAME)
 
 SRC_MOUNT := "$(PWD):$(DEV_GOPATH_SRC)/$(REPOSITORY_PATH)/$(APP_BASE_NAME)"
-BIN_MOUNT := "$(PWD)/bin:$(DEV_GOPATH_BIN)"
+BIN_MOUNT := "$(PWD)/$(BIN):$(DEV_GOPATH_BIN)"
 
 DEV_IMAGE := $(APP_BASE_NAME)-${DEV}
 PROD_IMAGE := $(APP_BASE_NAME)
@@ -45,14 +49,14 @@ build-dev-image:
 
 build-dev:
 	$(call print_target_name, "Compile binaries...")
-	@mkdir bin
+	@mkdir $(BIN)
 	$(RUNNER) -v $(BIN_MOUNT) -v $(SRC_MOUNT) -w $(DEV_WORKDIR) $(DEV_IMAGE) sh -c "go install ./..."
 
 build-prod-image:
 	$(call print_target_name, "Building an image with server and client binaries")
 	$(BUILDER) -t $(PROD_IMAGE) --target $(PROD) .
 
-test: test-ut
+test: test-ut coverage
 
 test-ut:
 	$(call print_target_name, "Run unit tests...")
@@ -86,18 +90,18 @@ run: run-server
 
 run-server:
 	$(call print_target_name, "Run server...")
-	$(RUNNER) -p 9090:9090 $(APP_BASE_NAME):latest $(ARGS)
+	$(RUNNER) -p 9090:9090 $(APP_BASE_NAME):$(TAG) $(ARGS)
 
 run-client:
 	$(call print_target_name, "Run client...")
-	$(RUNNER) -it --entrypoint /app/client $(APP_BASE_NAME):latest $(ARGS)
+	$(RUNNER) -it --entrypoint /app/client $(APP_BASE_NAME):$(TAG) $(ARGS)
 
 run-dev:
 	$(RUNNER) -it -v $(SRC_MOUNT) -w $(DEV_WORKDIR) $(DEV_IMAGE) sh
 
 clean:
 	$(call print_target_name, "Cleaning...")
-	@rm -rf ./bin/
+	@rm -rf ./$(BIN)/
 	@rm -f $(COVERAGE) \
 
 prune:
