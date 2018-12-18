@@ -14,7 +14,6 @@ DEV_GOPATH_BIN := $(DEV_GOPATH)/bin
 DEV_GOPATH_SRC := $(DEV_GOPATH)/src
 DEV_WORKDIR := $(DEV_GOPATH_SRC)/$(REPOSITORY_PATH)/$(APP_BASE_NAME)
 
-
 SRC_MOUNT := "$(PWD):$(DEV_GOPATH_SRC)/$(REPOSITORY_PATH)/$(APP_BASE_NAME)"
 BIN_MOUNT := "$(PWD)/bin:$(DEV_GOPATH_BIN)"
 
@@ -38,7 +37,7 @@ endef
 
 ### targets ###
 
-build: build-dev-image build-dev build-prod-image
+build: build-dev-image build-dev build-prod-image clean
 
 build-dev-image:
 	$(call print_target_name, "Building an image with go tools for development...")
@@ -46,6 +45,7 @@ build-dev-image:
 
 build-dev:
 	$(call print_target_name, "Compile binaries...")
+	@mkdir bin
 	$(RUNNER) -v $(BIN_MOUNT) -v $(SRC_MOUNT) -w $(DEV_WORKDIR) $(DEV_IMAGE) sh -c "go install ./..."
 
 build-prod-image:
@@ -63,7 +63,6 @@ coverage:
 	@$(CHECKER) sh -c '\
 		CGO_ENABLED="0" go test ./... -coverprofile=$(COVERAGE) \
 		&& chmod 666 $(COVERAGE)'
-	
 
 check: build-dev-image check-goimports check-golint check-govet
 
@@ -95,6 +94,11 @@ run-client:
 
 run-dev:
 	$(RUNNER) -it -v $(SRC_MOUNT) -w $(DEV_WORKDIR) $(DEV_IMAGE) sh
+
+clean:
+	$(call print_target_name, "Cleaning...")
+	@rm -rf ./bin/
+	@rm -f $(COVERAGE) \
 
 prune:
 	docker image prune
