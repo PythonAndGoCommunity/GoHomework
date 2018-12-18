@@ -25,6 +25,8 @@ BUILDER := docker build
 RUNNER := docker run --rm
 CHECKER := $(RUNNER) -v $(SRC_MOUNT) -w $(DEV_WORKDIR) $(DEV_IMAGE)
 
+COVERAGE := coverage.out
+
 SEARCH_GOFILES = find -not -path '*/vendor/*' -type f -name "*.go"
 
 DELIMITER="----------------------"
@@ -55,6 +57,12 @@ test: test-ut
 test-ut:
 	$(call print_target_name, "Run unit tests...")
 	@$(CHECKER) sh -c 'CGO_ENABLED="0" go test ./...'
+
+coverage:
+	$(call print_target_name, "Measure test coverage...")
+	@$(CHECKER) sh -c '\
+		CGO_ENABLED="0" go test ./... -coverprofile=$(COVERAGE) \
+		&& chmod 666 $(COVERAGE)'
 	
 
 check: build-dev-image check-goimports check-golint check-govet
