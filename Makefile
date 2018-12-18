@@ -54,19 +54,23 @@ test:
 	$(call print_target_name, "Run tests...")
 	@echo "test are not implemented yet"
 
-check: build-dev-image check-govet check-goimports check-golint
+check: build-dev-image check-goimports check-govet check-golint
 
 check-govet:
 	$(call print_target_name, "Checks (go vet)...")
-	$(CHECKER) sh -c "go tool vet -v ."
+	@$(CHECKER) sh -c 'go tool vet -v . | grep -v "Checking file"'
 
 check-goimports:
 	$(call print_target_name, "Checks (goimports)...")
-	$(CHECKER) sh -c "$(SEARCH_GOFILES) -exec goimports {} \;"
+	@$(CHECKER) sh -c 'test -z "`goimports -e -d .`"'
 
 check-golint:
 	$(call print_target_name, "Checks (golint)...")
-	$(CHECKER) sh -c "$(SEARCH_GOFILES) -exec golint {} \;"
+	@$(CHECKER) sh -c 'test -z "`golint ./...`"'
+
+check-golint-verbose:
+	$(call print_target_name, "Checks (golint)...")
+	@$(CHECKER) sh -c 'golint ./...'
 
 run: run-server
 
