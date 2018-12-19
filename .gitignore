@@ -1,3 +1,4 @@
 .vscode/go-kvdb.code-workspace
 bin/
 coverage.out
+go-kvdb.db*
