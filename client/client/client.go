@@ -37,8 +37,7 @@ func HandleUserRequests(conn net.Conn, done chan string) {
 			b, _ := reader.ReadByte()
 
 			if strings.Compare(string(b), "\t") == 0 {
-				// commandEnd := CompleteCommand(buff.String())
-				// fmt.Fprintln(os.Stdout, commandEnd)
+				// NOT IMPLEMENTED
 			}
 
 			buff.WriteString(string(b))
@@ -69,6 +68,8 @@ func SendRequest(conn net.Conn, text string) {
 	}
 }
 
+// Returns the rest of the command if it exists. Unused due to unimplementation
+// of Tab completion feature.
 func CompleteCommand(commandPart string) string {
 	commands := [4]string{"SET", "GET", "PUBLISH", "SUBSCRIBE"}
 

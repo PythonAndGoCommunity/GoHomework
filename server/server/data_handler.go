@@ -80,6 +80,7 @@ func ShowAllKeys() string {
 	return response
 }
 
+// Finds keys matching regexp pattern.
 func FindKeys(pattern string) string {
 	response := ""
 	for k := range Data {
@@ -95,6 +96,7 @@ func FindKeys(pattern string) string {
 	return response
 }
 
+// JSON -> Data
 func unDumpData(dumped []byte) DataType {
 	var data DataType
 	err := json.Unmarshal(dumped, &data)
@@ -104,6 +106,7 @@ func unDumpData(dumped []byte) DataType {
 	return data
 }
 
+// DATA -> JSON
 func dumpData(data DataType) []byte {
 	dumped, err := json.Marshal(data)
 	if err != nil {

@@ -20,7 +20,7 @@ Build a docker image and run a Docker container by your own or using Makefile.
 
 Enter the terminal in your Docker container.
 
-```sudo docker exec -it <name/hash> /bin/bash```
+```make -f Makefile enter_container```
 
 ### Launching the server
 
@@ -58,6 +58,6 @@ localhost:9090> HELP
 localhost:9090> 
 ```
 
-Launch `runserver` or `runclient` with `--help` argument to get usage manual.
+Launch `runserver.go` or `runclient.go` with `--help` argument to get usage manual.
 
 Server modes: `disk` (saves your changes), `memory` (keeps loaded database only in RAM).

@@ -9,10 +9,17 @@ SERVER_TESTFILE_PATH = server/test/server_test.go
 
 make_container:
 	sudo docker build -t goredis-app .
-	sudo docker rmi $$(sudo docker images -f "dangling=true" -q)
 	sudo docker run -d --rm -i --name goredis-app-running goredis-app
-	# sudo docker exec -it goredis-app-running /bin/bash
-	# sudo docker stop goredis-app-running
+
+clear_dangling:
+	sudo docker rmi $$(sudo docker images -f "dangling=true" -q)
+
+enter_container:
+	sudo docker exec -it goredis-app-running /bin/bash
+
+stop_container:
+	sudo docker stop goredis-app-running
+
 
 check:
 	go vet $(PROJECT_DIR_NAME)/server

@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+const LogFile = "server/server.log"
 const DataFile = "server/server/data/data.json"
 
 var Channels = make(map[net.Conn][]string)
@@ -18,7 +19,7 @@ var Verbose bool
 var ExitChannel = make(chan bool)
 
 func ConfigureLogging() {
-	f, err := os.OpenFile("server/server.log", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+	f, err := os.OpenFile(LogFile, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("ERROR: Cannot open file %v", err)
 	}
@@ -47,13 +48,14 @@ func HandleConnection(conn net.Conn) {
 
 		_, err := conn.Write([]byte(response + "\n"))
 		if err != nil {
-			fmt.Println("ERROR: cannot respond the request.")
+			PrintlnAndLog("ERROR: cannot respond the request to " + clientAddress + ".")
 		}
 	}
 
 	PrintlnAndLog("Client with address " + clientAddress + " disconnected.")
 }
 
+// Finds command name, divides arguments and executes according function.
 func ApplyCommand(cmdString string, conn net.Conn) string {
 	cmdName, cmdList := getCommandArguments(cmdString)
 	response := "ERR Unknown command"
@@ -81,7 +83,7 @@ func ApplyCommand(cmdString string, conn net.Conn) string {
 		if len(cmdList) == 1 {
 			response = GetEntry(cmdList[0])
 		} else {
-			response = "Usage: GET <key> or GET <key> <value>"
+			response = "Usage: GET <key>"
 		}
 
 	} else if strings.Contains(cmdName, "DEL") {
@@ -126,6 +128,8 @@ func ApplyCommand(cmdString string, conn net.Conn) string {
 				}
 			}
 			response = "\rOK              "
+		} else {
+			response = "Usage: PUBLISH <channel> <message>"
 		}
 
 	} else if strings.Contains(cmdName, "DUMP") {
@@ -157,6 +161,8 @@ func getCommandArguments(cmdString string) (string, []string) {
 	return cmdName, cmdList[1:]
 }
 
+// Separates arguments considering there are quotation marks used for
+// complex arguments.
 func splitArguments(s string) []string {
 	var args []string
 	inQuotes := false
@@ -184,12 +190,14 @@ func splitArguments(s string) []string {
 	return args
 }
 
+// Replaces multiple spaces with only one unit.
 func getRidOfSpaces(s string) string {
 	pattern := regexp.MustCompile(`[\s]{2,}`)
 	s = pattern.ReplaceAllString(s, " ")
 	return s
 }
 
+// Checks whether there is a string in a []string slice.
 func stringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if strings.Compare(a, b) == 0 {
