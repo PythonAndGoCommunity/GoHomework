@@ -1,0 +1,9 @@
+FROM golang
+
+WORKDIR /usr/local
+
+COPY ./client bin/client
+
+COPY ./server bin/server
+
+ENTRYPOINT ["bin/server"]
