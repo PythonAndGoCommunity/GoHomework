@@ -71,7 +71,7 @@ func main() {
 		// listen for reply
 		message, readerr := bufio.NewReader(client.conn).ReadString('\n')
 		if readerr != nil {
-			log.Fatalln(readerr)
+			log.Println(readerr)
 			break
 		}
 
