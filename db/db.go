@@ -3,88 +3,156 @@ package db
 import (
 	"encoding/gob"
 	"encoding/json"
-	"fmt"
+	"errors"
+	"io"
+	"log"
 	"os"
 	"sync"
 )
 
-const defaultPath = "./go-kvdb.db"
+const defaultPath = "go-kvdb.db"
 
-type mode int
-
-const (
-	disk mode = iota + 1
-	memory
-)
-
-// DataBase ...
+// DataBase struct.
 type DataBase struct {
+	mode string
 	sync.RWMutex
-	m    map[string]string
-	mod mode
+	m map[string]string
 }
 
-// NewDB ...
-func NewDB(mod mode) *DataBase {
-	return &DataBase{m: map[string]string{"a": "1", "b": "2"}}
+// newDB creates a new database object.
+func newDB(mode string) *DataBase {
+	return &DataBase{
+		mode: mode,
+		m:    map[string]string{},
+	}
 }
 
-// Open ...
-func (db *DataBase) Open(path string) error {
-	db.Lock()
-	defer db.Unlock()
+// InitDB init a database according to given mode
+func InitDB(mode string) (*DataBase, error) {
+	db := newDB(mode)
+	log.Println("Database mode:", mode)
 
-	err := readGob(path, &db.m)
-	fmt.Print(err)
-	return err
+	switch mode {
+	case "memory":
+		return db, nil
+	case "disk":
+		// check if the database file exists
+		if _, err := os.Stat(defaultPath); os.IsNotExist(err) {
+			log.Print("The database file not found. Creating a new one")
+			// create a database file if not exist
+			err := db.Save()
+			if err != nil {
+				return nil, err
+			}
+		}
+		// load a database from a file
+		err := db.Load()
+		if err != nil {
+			return nil, err
+		}
+		return db, nil
+	default:
+		return nil, errors.New("Unknown database mode")
+	}
 }
 
-// Save ...
+// Load database from a file on disk.
+func (db *DataBase) Load() error {
+	f, errFile := os.Open(defaultPath)
+	if errFile != nil {
+		log.Println("Error loading database from", defaultPath)
+		return errFile
+	}
+
+	// decode to a database struct map
+	errDec := decodeGob(f, &db.m)
+	if errDec != nil {
+		log.Println("Error decoding the database file")
+		return errDec
+	}
+
+	log.Println("Database loaded from", defaultPath)
+	return nil
+}
+
+// Save database on disk into a file.
 func (db *DataBase) Save() error {
-	db.Lock()
-	defer db.Unlock()
+	f, errFile := os.Create(defaultPath)
+	if errFile != nil {
+		return errFile
+	}
+	defer f.Close()
 
-	// f, _ := db.Dump()
-	// err := ioutil.WriteFile("./go-kvdb.db", f, 0644)
-	// if err != nil {
-	// 	return err
-	// }
-	// return nil
-
-	// path := "./go-kvdb.db"
-	err := writeGob(path, db.m)
-	return err
+	errEnc := encodeGob(f, db.m)
+	if errEnc != nil {
+		log.Println("Error encoding the database for saving")
+		return errEnc
+	}
+	return nil
 }
 
-// Get ...
+// Get returns the value of a key and the key state.
 func (db *DataBase) Get(key string) (string, bool) {
 	db.RLock()
 	defer db.RUnlock()
 
 	value, ok := db.m[key]
-	fmt.Println("getting", key, ": ", value, ok)
+	log.Println("getting", key, ": ", value, ok)
 	return value, ok
 }
 
-// Set ...
-func (db *DataBase) Set(key, value string) {
+// Set a key with the given value.
+func (db *DataBase) Set(key, value string) error {
 	db.Lock()
 	defer db.Unlock()
 
+	oldValue := db.m[key]
 	db.m[key] = value
+
+	// TODO refactor code repetition in Set and Delete functions,
+	// maybe we need to implement 'transactions':
+	// func (db *DataBase) (operation, payload) error {
+	// 		db.Lock()
+	// 		run operation with payload
+	// 		db.Save() if mode=disk
+	// 		revert operation if saving failed
+	// 		db.Unlock()
+	// }
+	if db.mode == "disk" {
+		err := db.Save()
+		if err != nil {
+			// revert old value and return error
+			db.m[key] = oldValue
+			return err
+		}
+	}
+
+	return nil
 }
 
-// Delete ...
-func (db *DataBase) Delete(key string) {
+// Delete deletes a key from database.
+func (db *DataBase) Delete(key string) error {
 	db.Lock()
 	defer db.Unlock()
 
+	oldValue := db.m[key]
 	delete(db.m, key)
+
+	if db.mode == "disk" {
+		err := db.Save()
+		if err != nil {
+			// revert old value and return error
+			db.m[key] = oldValue
+			return err
+		}
+	}
+
+	return nil
 }
 
 // TODO add wildcard support
 
-// Keys ...
+// Keys returns all keys.
 func (db *DataBase) Keys() []string {
 	db.RLock()
 	defer db.RUnlock()
@@ -97,35 +165,19 @@ func (db *DataBase) Keys() []string {
 	return result
 }
 
-// Dump ...
+// Dump serializes database data into a json format.
 func (db *DataBase) Dump() ([]byte, error) {
-	result, err := json.Marshal(db.m)
-	return result, err
+	return json.Marshal(db.m)
 }
 
-// func (db *DataBase) Restore(path string) error {
-// 	result, err := json.Marshal(db.m)
-// 	return result, err
-// }
-
-// Serialize object using gob and save result to disk.
-func writeGob(path string, object interface{}) error {
-	file, err := os.Create(path)
-	if err == nil {
-		encoder := gob.NewEncoder(file)
-		encoder.Encode(object)
-	}
-	file.Close()
-	return err
+// encodeGob encodes using gob.
+func encodeGob(r io.Writer, object interface{}) error {
+	encoder := gob.NewEncoder(r)
+	return encoder.Encode(object)
 }
 
-// Read object from disk and deserialize it using gob.
-func readGob(path string, object interface{}) error {
-	file, err := os.Open(path)
-	if err == nil {
-		decoder := gob.NewDecoder(file)
-		err = decoder.Decode(object)
-	}
-	file.Close()
-	return err
+// decodeGob decodes using gob.
+func decodeGob(r io.Reader, object interface{}) error {
+	decoder := gob.NewDecoder(r)
+	return decoder.Decode(object)
 }
