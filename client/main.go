@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"flag"
+	"fmt"
 	"log"
 	"net"
 	"strconv"
@@ -13,8 +14,9 @@ const protocol = "tcp"
 func main() {
 	flag.Parse()
 
-	// check if host is valid
-	// TODO move checking in config?
+	fmt.Println("To exit type 'exit'")
+
+	// validate host value
 	host := net.ParseIP(config.host)
 	if host == nil {
 		log.Fatalln("invalid ip adress:", config.host)
@@ -31,12 +33,14 @@ func main() {
 
 	remoteAddr, err := client.Connect(addr)
 	if err != nil {
-		log.Fatalf("Error connecting to %s.", addr)
+		log.Fatalf("Error connecting to %s", addr)
 	}
 
 	defer func() {
 		log.Println("Closing connection...")
 		client.Close()
+		log.Println("Exit")
+
 	}()
 
 	log.Println("Connected")
