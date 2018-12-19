@@ -93,4 +93,4 @@ Example
  
  ## Notice
  - Server & client will crash with non-existing flag's values.
- - Not implented -help flah.
+ - Not implented -help flag.
