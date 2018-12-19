@@ -65,7 +65,7 @@ test-ut:
 coverage:
 	$(call print_target_name, "Measure test coverage...")
 	@$(CHECKER) sh -c '\
-		CGO_ENABLED="0" go test ./... -coverprofile=$(COVERAGE) \
+		CGO_ENABLED="0" go test ./... -coverprofile=/dev/null | tee $(COVERAGE) \
 		&& chmod 666 $(COVERAGE)'
 
 check: build-dev-image check-goimports check-golint check-govet
