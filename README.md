@@ -90,3 +90,7 @@ Example
 
  - There no verbose mode and flag because logger any way logs full user's request.
  - Not implemented TAB completion of the commands in cli.
+ 
+ ## Notice
+ - Server & client will crash with non-existing flag's values.
+ - Not implented -help flah.
