@@ -98,7 +98,6 @@ func (db *DataBase) Get(key string) (string, bool) {
 	defer db.RUnlock()
 
 	value, ok := db.m[key]
-	log.Println("getting", key, ": ", value, ok)
 	return value, ok
 }
 
