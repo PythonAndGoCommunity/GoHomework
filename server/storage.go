@@ -61,10 +61,22 @@ func storage(cmd chan command, mode string) {
 
 		// KEYS
 		case "KEYS":
-
-			keys := data.Keys()
-			l := len(keys)
-			cmd.result <- strings.Join(keys, " ") + fmt.Sprintln(", number of keys:", l)
+			// set pattern to '*' if pattern is not setted by client
+			var pattern string
+			if len(cmd.fields) == 1 {
+				pattern = "*"
+			} else {
+				pattern = cmd.fields[1]
+			}
+			// get result from database
+			keys, err := data.Keys(pattern)
+			// send response
+			if err != nil {
+				cmd.result <- "Invalid pattern"
+			} else {
+				l := len(keys)
+				cmd.result <- strings.Join(keys, " ") + fmt.Sprintln(", number of keys:", l)
+			}
 
 		// DUMP
 		case "DUMP":

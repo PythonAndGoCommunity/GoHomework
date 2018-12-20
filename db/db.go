@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"regexp"
 	"sync"
 )
 
@@ -150,19 +151,24 @@ func (db *DataBase) Delete(key string) error {
 	return nil
 }
 
-// TODO add wildcard support
-
-// Keys returns all keys.
-func (db *DataBase) Keys() []string {
+// Keys returns all keys matching pattern.
+// 
+// Bug?: what if a key itself has '*'?
+func (db *DataBase) Keys(pattern string) ([]string, error) {
 	db.RLock()
 	defer db.RUnlock()
 
 	var result []string
 	for k := range db.m {
-		result = append(result, k)
-
+		m, err := globMatch(pattern, k)
+		if err != nil {
+			return nil, err
+		}
+		if m {
+			result = append(result, k)
+		}
 	}
-	return result
+	return result, nil
 }
 
 // Dump serializes database data into a json format.
@@ -180,4 +186,16 @@ func encodeGob(r io.Writer, object interface{}) error {
 func decodeGob(r io.Reader, object interface{}) error {
 	decoder := gob.NewDecoder(r)
 	return decoder.Decode(object)
+}
+
+var globsRegex = regexp.MustCompile(`\*+`)
+
+// globMatch reports whether the string contains any match of the pattern.
+// Pattern could include '*' symbol which matches zero or more characters.
+func globMatch(pattern string, s string) (bool, error) {
+	// normalize pattern by replacing all \*+ with .*
+	p := globsRegex.ReplaceAllString(pattern, ".*")
+	// compile a regex for matching
+	r, err := regexp.Compile("^" + p + "$")
+	return r.MatchString(s), err
 }
