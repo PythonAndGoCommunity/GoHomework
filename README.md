@@ -50,6 +50,8 @@ Starting options:
     The possible storage option (_disk_—stores database to disk, _memory_—database runs only in memory)
 -   `-p`, `--port`
     The port for listening on (default—_9090_)
+-   `-v`, `--verbose`
+    Verbose mode, full log of the client requests
 
 ## Client
 
@@ -67,7 +69,7 @@ Starting options:
 -   **DEL** - removes a key
 -   **KEYS** - returns all keys matching pattern; pattern could include '\*' symbol which matches zero or
     more characters
-- **DUMP** - (optional) - returns database data in the json format
+-   **DUMP** - (optional) - returns database data in the json format
 
 ## References
 
