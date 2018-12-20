@@ -42,7 +42,7 @@ func main() {
 	// initial client id
 	id := 1 
 
-	// wait and handle connetions
+	// wait and handle connections
 	for {
 		conn, err := li.Accept()
 		if err != nil {
