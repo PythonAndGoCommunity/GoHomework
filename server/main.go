@@ -28,16 +28,22 @@ func main() {
 
 	log.Printf("Server is listening %s\n", addr)
 	log.Println("Ready to accept connections")
+	if config.verbose {
+		log.Println("Server runs in verbose mode")
+	}
 
 	commands := make(chan command)
 
 	go storage(commands, config.mode)
+
+	id := 1 // client id
 
 	for {
 		conn, err := li.Accept()
 		if err != nil {
 			log.Fatalln(err)
 		}
-		go handle(commands, conn)
+		go handle(commands, conn, config.verbose, id)
+		id++
 	}
 }
