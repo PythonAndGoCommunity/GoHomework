@@ -61,7 +61,7 @@ func InitDB(mode string) (*DataBase, error) {
 func (db *DataBase) Load() error {
 	f, errFile := os.Open(defaultPath)
 	if errFile != nil {
-		log.Println("Error loading database from", defaultPath)
+		log.Println("Error opening the database file", defaultPath)
 		return errFile
 	}
 
