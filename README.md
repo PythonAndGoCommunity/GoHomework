@@ -1,12 +1,10 @@
 Server-client solution for storing KV data, lightweight analog of the Redis
 
 MAKEFILE:
+
     build   - Compiles the binaries for server and for client and creates the ready-to-use docker container (use make run)
-
     test    - Runs Unit and Integration tests for the server. File coverage.out will apeear in the serv dir
-
     check   - Runs subsequently "go vet", "goimports", "golint" on the project. Fails if any errors occur.
-
     run     - Starts the server and the client with default configuration (port: 9090, storage: RAM)
 
 serv:
