@@ -67,6 +67,7 @@ Starting options:
 -   **DEL** - removes a key
 -   **KEYS** - returns all keys matching pattern; pattern could include '\*' symbol which matches zero or
     more characters
+- **DUMP** - (optional) - returns database data in the json format
 
 ## References
 
