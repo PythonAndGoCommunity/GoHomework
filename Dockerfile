@@ -4,4 +4,4 @@ COPY . /Go/src/redis
 
 WORKDIR /Go/src/
 ENTRYPOINT ["/Go/pkg/redis"]
-EXPOSE 9090 
+EXPOSE 9090
