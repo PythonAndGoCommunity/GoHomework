@@ -16,6 +16,7 @@ func storage(cmd chan command, mode string) {
 	}
 
 	// TODO this huge code block needs to be refactored to separate functions
+	// TODO storage function is not right place to parse commands from string
 	// wait and handle commands from the commands channel
 	for cmd := range cmd {
 		if len(cmd.fields) < 1 {
