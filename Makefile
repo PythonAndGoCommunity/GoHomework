@@ -6,7 +6,7 @@ CLIENT_BIN = client
 
 .PHONY: test
 test:
-	go test  -coverprofile cover.out -v ./...
+	go test  -coverprofile coverage.out -v ./...
 .PHONY: check
 check: 
 	goimports -e -l $(SRC_PATH)
