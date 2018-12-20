@@ -1,8 +1,7 @@
 FROM golang:1.11
 
-COPY src/server /usr/local/bin/server
-COPY src/client /usr/local/bin/client
+COPY . /go/src/gohomework
 
-ENTRYPOINT ["/usr/local/bin/server"]
+ENTRYPOINT ["/go/src/gohomework/server/server"]
 
 EXPOSE 9090
