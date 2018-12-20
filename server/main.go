@@ -41,7 +41,8 @@ func main() {
 	for {
 		conn, err := li.Accept()
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
+			continue
 		}
 		go handle(commands, conn, config.verbose, id)
 		id++
