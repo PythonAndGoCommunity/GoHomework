@@ -82,7 +82,7 @@ func storage(cmd chan command, mode string) {
 		case "DUMP":
 			json, err := data.Dump()
 			if err != nil {
-				cmd.result <- "Error while "
+				cmd.result <- "Error while dumping"
 			} else {
 				cmd.result <- string(json)
 			}
