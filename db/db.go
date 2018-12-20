@@ -151,7 +151,7 @@ func (db *DataBase) Delete(key string) error {
 }
 
 // Keys returns all keys matching pattern.
-// 
+//
 // Bug?: what if a key itself has '*'?
 func (db *DataBase) Keys(pattern string) ([]string, error) {
 	db.RLock()

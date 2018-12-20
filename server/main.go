@@ -40,7 +40,7 @@ func main() {
 	go storage(commands, config.mode)
 
 	// initial client id
-	id := 1 
+	id := 1
 
 	// wait and handle connections
 	for {
