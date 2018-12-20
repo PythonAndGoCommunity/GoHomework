@@ -13,8 +13,8 @@ import (
 
 
 //MAX key and value len
-const keyBuffLen = 10 //10
-const valueBuffLen = 10 //12
+const keyBuffLen = 63 //10
+const valueBuffLen = 63 //12
 
 //Reading commands from terminal
 func startup() (port string, disk bool, filePath string, err error) {
