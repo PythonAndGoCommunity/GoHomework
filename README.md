@@ -15,7 +15,7 @@ If you have `go` tool installed:
 -   get source files: `go get github.com/SiarheiKresik/go-kvdb`
 -   `cd $GOPATH/src/github.com/SiarheiKresik/go-kvdb`
 
-Or get souce files by cloning repository directly:
+Or get source files by cloning repository directly:
 
 -   get source files: `git clone https://github.com/SiarheiKresik/go-kvdb.git`
 -   `cd go-kvdb`
@@ -24,7 +24,7 @@ Or get souce files by cloning repository directly:
 
 Run `make`. This builds the `go-kvdb` docker container with the server and client binaries.
 
-## Runing
+## Running
 
 Run server in a docker container:
 
@@ -46,18 +46,18 @@ Run client in a docker container:
 
 Starting options:
 
--   "`-m`, `--mode`"  
+-   `-m`, `--mode`
     The possible storage option (_disk_—stores database to disk, _memory_—database runs only in memory)
--   "`-p`, `--port`"
+-   `-p`, `--port`
     The port for listening on (default—_9090_)
 
 ## Client
 
 Starting options:
 
--   "`-p`, `--port`"  
+-   `-p`, `--port`
     The port to connect to the server (default—_9090_)
--   "`-h`, `--host`"
+-   `-h`, `--host`
     The host to connect to the server (default—_127.0.0.1_)
 
 ## Supported commands
