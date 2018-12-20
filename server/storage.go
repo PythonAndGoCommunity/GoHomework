@@ -23,15 +23,12 @@ func storage(cmd chan command, mode string) {
 			continue
 		}
 
-		log.Println("Command:", cmd.fields)
-
 		// Executing command
 		switch cmd.fields[0] {
 
 		// GET <KEY>
 		case "GET":
 			result, ok := data.Get(cmd.fields[1])
-			fmt.Println("sending result:", result)
 			if ok {
 				cmd.result <- "\"" + result + "\""
 			} else {
