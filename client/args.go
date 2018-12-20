@@ -36,10 +36,4 @@ func init() {
 
 	flag.StringVar(&config.host, "host", defaultHost, hostDesc)
 	flag.StringVar(&config.host, "h", defaultHost, hostDesc+shorhand)
-
-	flag.BoolVar(&config.dump, "dump", defaultDump, dumpDesc)
-	flag.BoolVar(&config.dump, "d", defaultDump, dumpDesc+shorhand)
-
-	flag.BoolVar(&config.restore, "restore", defaultRestore, restoreDesc)
-	flag.BoolVar(&config.restore, "r", defaultRestore, restoreDesc+shorhand)
 }
