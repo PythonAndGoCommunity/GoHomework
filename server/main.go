@@ -18,6 +18,7 @@ func main() {
 
 	flag.Parse()
 
+	// listen on the given address
 	addr := net.JoinHostPort("", strconv.Itoa(config.port))
 	li, err := net.Listen(protocol, addr)
 	if err != nil {
@@ -26,6 +27,7 @@ func main() {
 
 	defer li.Close()
 
+	// welcome messages
 	log.Printf("Server is listening %s", addr)
 	log.Println("Ready to accept connections")
 	if config.verbose {
@@ -34,10 +36,13 @@ func main() {
 
 	commands := make(chan command)
 
+	// initialize storage
 	go storage(commands, config.mode)
 
-	id := 1 // client id
+	// initial client id
+	id := 1 
 
+	// wait and handle connetions
 	for {
 		conn, err := li.Accept()
 		if err != nil {
