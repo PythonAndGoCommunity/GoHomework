@@ -31,7 +31,7 @@ func newDB(mode string) *DataBase {
 // InitDB init a database according to the given mode.
 func InitDB(mode string) (*DataBase, error) {
 	db := newDB(mode)
-	log.Println("Database mode:", mode)
+	log.Printf("Database mode: %s", mode)
 
 	switch mode {
 	case "memory":
@@ -72,7 +72,7 @@ func (db *DataBase) Load() error {
 		return errDec
 	}
 
-	log.Println("Database loaded from", defaultPath)
+	log.Printf("Database loaded from %s", defaultPath)
 	return nil
 }
 

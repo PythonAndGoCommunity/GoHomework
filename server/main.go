@@ -26,7 +26,7 @@ func main() {
 
 	defer li.Close()
 
-	log.Printf("Server is listening %s\n", addr)
+	log.Printf("Server is listening %s", addr)
 	log.Println("Ready to accept connections")
 	if config.verbose {
 		log.Println("Server runs in verbose mode")
