@@ -12,13 +12,12 @@ import (
 
 
 //Using disk as storage
-func saveData(filePath string, clientCh clientChan) (error) {
+func saveData(filePath string, clientCh clientChan) {
 	//Redis disk storage
 	file, fileErr := os.Create(filePath)
 	//file, fileErr := os.OpenFile(filePath, os.O_RDWR, 0600)
 	if fileErr != nil{
 		panic(fileErr)
-		return fileErr
 	}
 	defer file.Close()
 	format := "%" + strconv.Itoa(keyBuffLen) + "s %" + strconv.Itoa(valueBuffLen) + "s\n"
@@ -61,18 +60,17 @@ func saveData(filePath string, clientCh clientChan) (error) {
 		default:
 			go func() {
 				clientCh.output <- ""
-				err := errors.New("ERROR: Unknown command\n")
+				err := errors.New("ERROR: Unknown command")
 				clientCh.err <- err
 			}()
 		}
 	}
-	return nil
 }
 
 
 func setDisk(file *os.File, cmdList *[]string, format *string)(value string, err error){
 	if len(*cmdList) != 3 {
-		err := errors.New("ERROR: Wrong command\nSET <KEY> <VALUE>\n")
+		err := errors.New("ERROR: Wrong command\nSET <KEY> <VALUE>")
 		return "", err
 	}
 	key := (*cmdList)[1]
@@ -95,7 +93,7 @@ func setDisk(file *os.File, cmdList *[]string, format *string)(value string, err
 
 func getDisk(file *os.File, cmdList *[]string)(value string, err error){
 	if len(*cmdList) != 2 {
-		err := errors.New("ERROR: Wrong command\nGET <KEY>\n")
+		err := errors.New("ERROR: Wrong command\nGET <KEY>")
 		return "", err
 	}
 	key := (*cmdList)[1]
@@ -106,16 +104,15 @@ func getDisk(file *os.File, cmdList *[]string)(value string, err error){
 	if ok {
 		//Returning the value
 		return value, nil
-	} else {
-		//There are no such key in db
-		err = errors.New("ERROR: Unknown key \"" + key + "\"\n")
-		return "", err
 	}
+	//There are no such key in db
+	err = errors.New("ERROR: Unknown key \"" + key + "\"")
+	return "", err
 }
 
 func delDisk(file *os.File, cmdList *[]string, format *string)(value string, err error){
 	if len(*cmdList) != 2 {
-		err := errors.New("ERROR: Wrong command\nGET <KEY>\n")
+		err := errors.New("ERROR: Wrong command\nGET <KEY>")
 		return "", err
 	}
 	key := (*cmdList)[1]
@@ -129,11 +126,11 @@ func delDisk(file *os.File, cmdList *[]string, format *string)(value string, err
 		buff := []byte(str)
 		_, err := file.WriteAt(buff, offset)
 		return value, err
-	} else {
-		//There are no such key in db
-		err := errors.New("ERROR: Unknown key \"" + key + "\"\n")
-		return"", err
 	}
+	//There are no such key in db
+	err = errors.New("ERROR: Unknown key \"" + key + "\"")
+	return"", err
+
 }
 
 func findKey(file *os.File, key *string)(ok bool, value string, offset int64, err error){
@@ -157,8 +154,7 @@ func findKey(file *os.File, key *string)(ok bool, value string, offset int64, er
 		if words[0] == *key {
 			value = words[1]
 			return true, value, offset, err
-		} else {
-			offset += int64(len(str))
 		}
+		offset += int64(len(str))
 	}
 }

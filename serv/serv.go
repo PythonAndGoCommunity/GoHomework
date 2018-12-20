@@ -46,7 +46,7 @@ func startup() (port string, disk bool, filePath string, err error) {
 				}
 			}
 		default:
-			err = errors.New("ERROR: Unknown command\n")
+			err = errors.New("ERROR: Unknown command")
 			return
 		}
 	}
@@ -92,7 +92,7 @@ Loop:
 		case "exit":
 			go func() {
 				clientCh.output <- ""
-				err := errors.New("exit")
+				err := errors.New("ERROR")
 				clientCh.err <- err
 			}()
 			break Loop
@@ -100,7 +100,7 @@ Loop:
 			// sending error
 			go func() {
 				clientCh.output <- ""
-				err := errors.New("ERROR: Wrong command\nUse:\n SET <KEY> <VALUE>\n GET <KEY>\n DEL <KEY>\n")
+				err := errors.New("ERROR: Wrong command\nUse:\n SET <KEY> <VALUE>\n GET <KEY>\n DEL <KEY>")
 				clientCh.err <- err
 			}()
 		}
@@ -113,7 +113,7 @@ Loop:
 func setRAM(cmdList *[]string, data *(map[string]string))(value string, err error){
 
 	if len(*cmdList) != 3 {
-		err := errors.New("ERROR: Wrong command\nSET <KEY> <VALUE>\n")
+		err := errors.New("ERROR: Wrong command\nSET <KEY> <VALUE>")
 		return "", err
 	}
 	(*data)[(*cmdList)[1]] = (*cmdList)[2]
@@ -123,32 +123,30 @@ func setRAM(cmdList *[]string, data *(map[string]string))(value string, err erro
 // GET <KEY>
 func getRAM(cmdList *[]string, data *(map[string]string))(value string, err error){
 	if len(*cmdList) != 2 {
-		err := errors.New("ERROR: Wrong command\nGET <KEY>\n")
+		err := errors.New("ERROR: Wrong command\nGET <KEY>")
 		return "", err
 	}
 	value, ok := (*data)[(*cmdList)[1]]
 	if ok {
 		return value, nil
-	} else {
-		err := errors.New("ERROR: Unknown key \"" + (*cmdList)[1] + "\"\n")
-		return "", err
 	}
+	err = errors.New("ERROR: Unknown key \"" + (*cmdList)[1] + "\"")
+	return "", err
 }
 
 // DEL <KEY>
 func delRAM(cmdList *[]string, data *(map[string]string))(value string, err error){
 	if len(*cmdList) != 2 {
-		err := errors.New("ERROR: Wrong command\nGET <KEY>\n")
+		err := errors.New("ERROR: Wrong command\nGET <KEY>")
 		return "", err
 	}
 	value, ok := (*data)[(*cmdList)[1]]
 	if ok {
 		delete(*data, (*cmdList)[1])
 		return value, nil
-	} else {
-		err := errors.New("ERROR: Unknown key \"" + (*cmdList)[1] + "\"\n")
-		return "", err
 	}
+	err = errors.New("ERROR: Unknown key \"" + (*cmdList)[1] + "\"")
+	return "", err
 }
 
 //Check client's input
@@ -156,7 +154,7 @@ func checkInput(clientCh *clientChan, cmdList *[]string)(bool){
 	if len(*cmdList) < 1 || len(*cmdList) > 3{
 		go func() {
 			clientCh.output <- ""
-			err := errors.New("ERROR: Wrong command\nUse:\n SET <KEY> <VALUE>\n GET <KEY>\n DEL <KEY>\n")
+			err := errors.New("ERROR: Wrong command\nUse:\n SET <KEY> <VALUE>\n GET <KEY>\n DEL <KEY>")
 			clientCh.err <- err
 		}()
 		return false
@@ -164,7 +162,7 @@ func checkInput(clientCh *clientChan, cmdList *[]string)(bool){
 	if len(*cmdList) == 2 && len((*cmdList)[1]) > keyBuffLen {
 		go func() {
 			clientCh.output <- ""
-			err := errors.New("ERROR: The key is too long\n")
+			err := errors.New("ERROR: The key is too long")
 			clientCh.err <- err
 		}()
 		return false
@@ -172,7 +170,7 @@ func checkInput(clientCh *clientChan, cmdList *[]string)(bool){
 	if len(*cmdList) == 3 && (len((*cmdList)[1]) > keyBuffLen || len((*cmdList)[2]) > valueBuffLen){
 		go func() {
 			clientCh.output <- ""
-			err := errors.New("ERROR: Key or value is too long\n")
+			err := errors.New("ERROR: Key or value is too long")
 			clientCh.err <- err
 		}()
 		return false
@@ -195,13 +193,13 @@ Loop:
 		err := <-clientCh.err
 		switch err{
 		case nil:
-			answer += "\n"
-			io.WriteString(conn, answer)
+			answer += "\r\n"
 		case errors.New("exit"):
 			break Loop
 		default:
-			io.WriteString(conn, err.Error())
+			answer = err.Error() + "\r\n"
 		}
+		io.WriteString(conn, answer)
 	}
 }
 
@@ -231,18 +229,13 @@ func main() {
 				err:	clErr,
 			}
 
-			if !disk {
-				//go saveData(filePath, clientCh)
-				go redis(clientCh)
-				fmt.Println(filePath)
-			}
-			/*if disk {
+			if disk {
 				//Storage - disk
-				go saveData(filePass, clientCh)
+				go saveData(filePath, clientCh)
 			} else {
 				//Storage - RAM
 				go redis(clientCh)
-			}*/
+			}
 
 			for {
 				conn, err := li.Accept()

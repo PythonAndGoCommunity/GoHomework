@@ -19,9 +19,6 @@ DOCKER_RUNNER += -w $(REPOSITORY_PATH)/
 .PHONY: build
 build: build_cli build_serv
 	docker build -t redis:build .
-	docker run -it --name redis_build redis:build
-	./serv/serv &
-	./client/client
 
 .PHONY: build_cli
 build_cli:
@@ -33,20 +30,26 @@ build_serv:
 
 ############### Docker Target ####################
 .PHONY: run
-run: build_serv
-	docker build -t redis:default ./serv/
-	docker run --name redis_default redis:default
+run: build
+	docker run -it --name redis_build redis:build
 
 .PHONY: build_check
 build_check:
-	docker build -t redis:check .
+	docker build -t redis:checkSR ./$(SERVER_PATH)
+	docker build -t redis:checkCL ./$(CLIENT_PATH)
 ################# Testing ####################
 .PHONY: check
 check: build_check
-	docker run -it --name redis_check redis:check /bin/bash
-	echo go vet: client
-	go vet ./client/
+	docker run --rm --name redis_checkSR redis:checkSR
+	docker run --rm --name redis_checkCL redis:checkCL
 
 .PHONY: test
 test:
 	$(DOCKER_RUNNER)$(SERVER_PATH) $(DOCKER_BUILDER) go test -cover -coverprofile=coverage.out
+
+.PHONY: clean
+clean:
+	docker rm -f  redis_build &>/dev/null
+	docker rmi -f redis:build &>/dev/null
+	docker rmi -f redis:checkSR &>/dev/null
+	docker rmi -f redis:checkCL &>/dev/null

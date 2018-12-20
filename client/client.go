@@ -31,7 +31,7 @@ func startup() (addr string, err error) {
 		case "-h", "--host":
 			host = args[i+1]
 		default:
-			err = errors.New("ERROR: Unknown command\n")            
+			err = errors.New("ERROR: Unknown command")
 			return
 		}
 	}
@@ -54,8 +54,19 @@ func main() {
 				reader := bufio.NewReader(os.Stdin)
 				command, _ := reader.ReadString('\n')
 				fmt.Fprintf(conn, command)
-				message, _ := bufio.NewReader(conn).ReadString('\n')
-				fmt.Print(message)
+				/*
+				var message string
+				for {
+					str, err := bufio.NewReader(conn).ReadString('\n')
+					if err != nil {
+						fmt.Print(err)
+						break
+					}
+					message = message + str + "\n"
+				}
+				*/
+				message, _ := bufio.NewReader(conn).ReadString('\r')
+				fmt.Println(string(message))
 			}
 		}
 

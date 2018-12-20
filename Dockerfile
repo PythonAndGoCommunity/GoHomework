@@ -8,10 +8,8 @@ COPY ./serv/ /usr/src/serv
 
 COPY ./client/ /usr/src/client
 
-#CMD ["./serv/serv", "&"]
+COPY ./docker-entrypoint.sh /usr/local/bin
 
-#CMD ["echo", "starting client"]
-
-#CMD ["./client/client"]
+ENTRYPOINT docker-entrypoint.sh
 
 
