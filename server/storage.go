@@ -30,7 +30,7 @@ func storage(cmd chan command, mode string) {
 		case "GET":
 			result, ok := data.Get(cmd.fields[1])
 			if ok {
-				cmd.result <- "\"" + result + "\""
+				cmd.result <- fmt.Sprintf("\"%s\"", result)
 			} else {
 				cmd.result <- "no such key"
 			}
@@ -73,7 +73,7 @@ func storage(cmd chan command, mode string) {
 				cmd.result <- "Invalid pattern"
 			} else {
 				l := len(keys)
-				cmd.result <- strings.Join(keys, " ") + fmt.Sprintln(", number of keys:", l)
+				cmd.result <- strings.Join(keys, " ") + fmt.Sprintf(", number of keys: %d", l)
 			}
 
 		// for debugging only
