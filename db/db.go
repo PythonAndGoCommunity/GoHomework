@@ -28,7 +28,7 @@ func newDB(mode string) *DataBase {
 	}
 }
 
-// InitDB init a database according to given mode
+// InitDB init a database according to the given mode.
 func InitDB(mode string) (*DataBase, error) {
 	db := newDB(mode)
 	log.Println("Database mode:", mode)
@@ -114,8 +114,8 @@ func (db *DataBase) Set(key, value string) error {
 	// maybe we need to implement 'transactions':
 	// func (db *DataBase) (operation, payload) error {
 	// 		db.Lock()
-	// 		run operation with payload
-	// 		db.Save() if mode=disk
+	// 		operation(payload)
+	// 		if mode==disk { db.Save() }
 	// 		revert operation if saving failed
 	// 		db.Unlock()
 	// }
