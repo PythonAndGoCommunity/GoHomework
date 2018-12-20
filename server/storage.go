@@ -15,6 +15,7 @@ func storage(cmd chan command, mode string) {
 		log.Fatalln("Error while initializing database:", err)
 	}
 
+	// TODO this huge code block needs to be refactored to separate functions
 	// wait and handle commands from the commands channel
 	for cmd := range cmd {
 		if len(cmd.fields) < 1 {
@@ -78,7 +79,7 @@ func storage(cmd chan command, mode string) {
 				cmd.result <- strings.Join(keys, " ") + fmt.Sprintln(", number of keys:", l)
 			}
 
-		// DUMP
+		// for debugging only
 		case "DUMP":
 			json, err := data.Dump()
 			if err != nil {
